@@ -140,7 +140,10 @@ void	 print_computer_selection( void )
 
 int computer_turn( void )
 {
+
+#ifdef ANIMATE_TURN
 	animate_computer_selection( );
+#endif
 	current_game_data.computer_selection = get_computer_selection( );
 
 #ifdef DEBUG
@@ -231,14 +234,14 @@ void total_game_analysis( void )
 	fprintf( stdout, "Games won by player:   %ld\n", total_game_data.games_won_by_player );
 	fprintf( stdout, "Games won by computer: %ld\n", total_game_data.games_won_by_computer );
 	fprintf( stdout, "Game ties:             %ld\n", total_game_data.game_ties );
-	fprintf( stdout, "+------------------------------+---------------------------+\n" );
-	fprintf( stdout, "| Human player breakdow        | Computer player breakdown |\n" );
-	fprintf( stdout, "+------------------------------+---------------------------+\n" );
-	fprintf( stdout, "| rock | paper | scissors |    | rock | paper | scissors   |\n");
-	fprintf( stdout, "| %ld  |  %ld  |  %ld     |    |  %ld | %ld   |  %ld       |\n", 
+	fprintf( stdout, "+----------------------------+-----------------------------+\n" );
+	fprintf( stdout, "| Human player breakdown     | Computer player breakdown   |\n" );
+	fprintf( stdout, "+----------------------------+-----------------------------+\n" );
+	fprintf( stdout, "| rock \t| paper\t| scissors   | rock\t| paper\t| scissors |\n");
+	fprintf( stdout, "| %.2ld\t| %.2ld\t| %.2ld\t     | %.2ld\t| %.2ld\t|  %.2ld\t   |\n", 
 		total_game_data.player_rock_selections,   total_game_data.player_paper_selections,   total_game_data.player_scissor_selections,
 		total_game_data.computer_rock_selections, total_game_data.computer_paper_selections, total_game_data.computer_scissor_selections ); 
-	fprintf( stdout, "+---------------------------------------------------------+\n");
+	fprintf( stdout, "+----------------------------------------------------------+\n");
 
 	fprintf( stdout, "\n" );
 	fflush( stdout );
