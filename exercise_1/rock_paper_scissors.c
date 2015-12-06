@@ -60,8 +60,8 @@ void print_computer_selection( void );
 void decide_winner( int player_selection, int computer_selection );
 void print_help( void );
 void print_instructions_to_player( void );
-int	 animate_computer_selection( void );
-int	 get_computer_selection( void);
+int  animate_computer_selection( void );
+int  get_computer_selection( void);
 void total_game_analysis( void );
 
 int sanity_ok( ){
@@ -99,12 +99,12 @@ void print_instructions_to_player( void )
 	return;
 }
 
-int	 animate_computer_selection( void )
+int animate_computer_selection( void )
 {
-	// setup a counter
+	// loops to animate
 	int counter = 1;
-	// wait for 1 second to switch
 
+	// wait for 1 second to switch
 	while( counter-- > 0 ) {
 		fprintf( stderr, "|");
 		sleep( 1 );
@@ -120,7 +120,7 @@ int	 animate_computer_selection( void )
 	return 0;
 }
 
-int	 get_computer_selection( void)
+int get_computer_selection( void )
 {
 
 	time_t t;
@@ -131,7 +131,7 @@ int	 get_computer_selection( void)
 	return (rand() % 3) + 1;
 }
 
-void	 print_computer_selection( void )
+void print_computer_selection( void )
 {
 	printf( "\n---------\nComputer has selected: %d\n---------\n\n", 
 		current_game_data.computer_selection );
@@ -176,7 +176,7 @@ void print_human_selection( void )
 int human_turn( void )
 {
 	int returned_characters = 0;
-	char *stdin_buffer = malloc( sizeof( long ) );
+	char *stdin_buffer = malloc( sizeof( long * 1024 ) );
 
 	print_instructions_to_player( );
 	fgets( stdin_buffer, sizeof( stdin_buffer ), stdin );
