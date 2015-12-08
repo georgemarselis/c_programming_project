@@ -16,3 +16,25 @@ n στοιχείων βασίζεται σε σάρωμα του πίνακα κ
 
 
 */
+
+#include <stdio.h>
+#include <stdlib.h>
+
+int find_minimum( void ) ;
+int interchange_items( void );
+
+
+int find_minimum( void )
+{
+
+}
+
+int interchange_items( void )
+{
+
+}
+
+int main( void *argv[], int argc )
+{
+
+}
