@@ -55,3 +55,12 @@ B. Mία συνάρτηση που θα υπολογίζει το πλήθος �
 #include <stdlib.h>
 #include <ctype.h>
 #include <string.h>
+#include <assert.h>
+
+
+int main( int argc, char* argv[] )
+{
+	assert( argc );
+	assert( *argv );
+	return 0;
+}
