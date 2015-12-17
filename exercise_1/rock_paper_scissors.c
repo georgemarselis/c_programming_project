@@ -176,7 +176,7 @@ void print_human_selection( void )
 int human_turn( void )
 {
 	int returned_characters = 0;
-	char *stdin_buffer = malloc( sizeof( long * 1024 ) );
+	char *stdin_buffer = malloc( sizeof( long  ) * 1024 );
 
 	print_instructions_to_player( );
 	fgets( stdin_buffer, sizeof( stdin_buffer ), stdin );
