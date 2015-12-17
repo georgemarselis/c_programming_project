@@ -1,11 +1,11 @@
 DEBUGFLAGS   := -Wall -Wextra -ansi -std=c99 -g -DDEBUG
 COMPILEFLAGS := -Wall -Wextra -ansi -std=c99
-SOURCE       := rock_paper_scissors.c
-BINARY       := rock_paper_scissors
-SYMBOLDIR    := rock_paper_scissors.dSYM
+SOURCE       := sentence_table.c
+BINARY       := sentence_table
+SYMBOLDIR    := sentence_table.dSYM
 GCC := gcc
 
-rock_paper_scissors: rock_paper_scissors.c
+sentence_table: sentence_table.c
 	$(GCC) $(COMPILEFLAGS) $(SOURCE) -o $(BINARY)	
 
 debug: 
