@@ -19,11 +19,12 @@
 
 Τυπικά η δήλωση θα δίνεται ως εξής:
 
-struct sentence_pair {
-	char sentence[Μ];
-   	int length; 
-};
-struct word_pair word_table[N];
+struct sentence_pair {  
+	char sentence[Μ];    
+	int length;
+};  
+
+struct word_pair sentence_table[N]
 
 Ζητείται να υλοποιηθούν οι εξής συναρτήσεις:
 
@@ -34,11 +35,14 @@ struct word_pair word_table[N];
 
 	(με size συμβολίζεται ο αριθμός των γραμμών του πίνακα).
 
-B. Mία συνάρτηση που θα υπολογίζει το πλήθος των λέξεων που είναι αποθηκευμένες στον πίνακα sentence_table[].
+B. Mία συνάρτηση που θα υπολογίζει το πλήθος των λέξεων που είναι
+	αποθηκευμένες στον πίνακα sentence_table[].
 
-Γ. Μία συνάρτηση που θα δέχεται σαν είσοδο μία λέξη και θα εμφανίζει μία λίστα με τις γραμμές του πίνακα που την εμπεριέχουν.
+Γ. Μία συνάρτηση που θα δέχεται σαν είσοδο μία λέξη και θα εμφανίζει μία
+	λίστα με τις γραμμές του πίνακα που την εμπεριέχουν.
 
-Ελέγξτε τον κώδικά σας με ένα κυρίως πρόγραμμα το οποίο θα καλεί τις ανωτέρω συναρτήσεις με την σειρά με την οποία ορίστηκαν.
+Ελέγξτε τον κώδικά σας με ένα κυρίως πρόγραμμα το οποίο θα καλεί τις ανωτέρω
+συναρτήσεις με την σειρά με την οποία ορίστηκαν.
 
 Υποδείξεις:
 
@@ -56,6 +60,50 @@ B. Mία συνάρτηση που θα υπολογίζει το πλήθος �
 #include <ctype.h>
 #include <string.h>
 #include <assert.h>
+
+#ifdef BY_THE_BOOK
+#define M 1024
+#define N 1024
+#endif
+
+
+struct sentence_pair {  
+#ifdef BY_THE_BOOK
+	char sentence[M];
+	int length;
+#else
+	char *sentence;    
+#endif
+};  
+
+#ifdef DEBUG
+int read_table(  struct sentence_pair *sentence_table,   int *size );
+int write_table( struct sentence_pair  sentence_table[], int  size );
+void destroy_table( struct sentence_pair sentence_table[], int  size );
+#endif
+
+void initialize   ( struct sentence_pair sentence_table[], int size );
+int  count_words  ( struct sentence_pair sentence_table[], int size );
+int *find_location( struct sentence_pair sentence_table[], int size );
+
+int find_word( char *word );
+
+unsigned long read_table(  struct sentence_pair *sentence_table,   int *size )
+{
+	unsigned long bytes_read = 0;
+#ifdef LOREM_IPSUM
+
+	// if LOREM_IPSUM is defined during compile, read in the Star Wars[tm]
+	// Lorem Ipsum lorem_ipsum.txt; use that for sample input
+
+#endif
+
+	assert( sentence_table );
+	assert( *size );
+
+	return bytes_read;
+}
+
 
 
 int main( int argc, char* argv[] )
