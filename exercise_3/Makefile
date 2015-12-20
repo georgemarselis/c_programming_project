@@ -1,4 +1,4 @@
-DEBUGFLAGS   := -Wall -Wextra -ansi -std=c99 -g -DDEBUG -DLOREM_IPSUM
+DEBUGFLAGS   := -Wall -Wextra -ansi -std=c99 -g -DDEBUG
 COMPILEFLAGS := -Wall -Wextra -ansi -std=c99
 SOURCE       := sentence_table.c
 BINARY       := sentence_table

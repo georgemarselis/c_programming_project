@@ -78,50 +78,58 @@ struct sentence_pair {
 	char *sentence;    
 };  
 
-unsigned long read_table(  struct sentence_pair *sentence_table );
-int write_table( struct sentence_pair  sentence_table[], int  size );
-void destroy_table( struct sentence_pair sentence_table[], int  size );
+struct command_line {
+	int read_lorem;
+	char *filename;
+};
 
-void help( void );
-void initialize   ( struct sentence_pair *sentence_table );
-int  count_words  ( struct sentence_pair sentence_table[], int size );
-int *find_location( struct sentence_pair sentence_table[], int size );
+struct command_line args = { 0, "" };
 
-ssize_t read_loremipsum( struct sentence_pair *sentence_table );
+size_t read_table( struct sentence_pair *sentence_table, char *filename );
+int    write_table( struct sentence_pair  sentence_table[], int  size );
+void   destroy_table( struct sentence_pair sentence_table[], int  size );
 
-int find_word( char *word );
+void   help         ( void );
+void   initialize   ( struct sentence_pair *sentence_table );
+void   parse_command_args( int argc, char *argv[] );
+size_t read_loremipsum( struct sentence_pair *sentence_table );
+int    count_words  ( struct sentence_pair sentence_table[], int size );
+int   *find_location( struct sentence_pair sentence_table[], int size );
+int    find_word( char *word );
 
 
-void initialize ( struct sentence_pair *sentence_table ) 
+
+
+
+void initialize ( struct sentence_pair *sentence_table )
 {
 
-#ifdef DEBUG
-	read_loremipsum( sentence_table );
-#else
-	read_table( sentence_table );
-#endif
+	unsigned long bytes_read = 0;
+
+	if( args.read_lorem ) {
+		// Read in the Star Wars[tm] Lorem Ipsum from lorem_ipsum.txt;
+		// return content to use as sample input
+		bytes_read = read_loremipsum( sentence_table );
+	}
+	else {
+		bytes_read = read_table( sentence_table, args.filename );
+	}
 
 	return;
 }
 
 
-unsigned long read_table( struct sentence_pair *sentence_table )
+size_t read_table( struct sentence_pair *sentence_table, char *filename )
 {
-	unsigned long bytes_read = 0;
+	size_t bytes_read  = 0;
 
-#ifdef LOREM_IPSUM
-
-
-	// if LOREM_IPSUM is defined during compile, read in the Star Wars[tm]
-	// Lorem Ipsum lorem_ipsum.txt; return content to use as sample input
-	bytes_read = read_loremipsum( sentence_table );
-
-#endif
+	assert( NULL != sentence_table );
+	assert( NULL != filename );
 
 	return bytes_read;
 }
 
-ssize_t read_loremipsum( struct sentence_pair *sentence_table ) {
+size_t read_loremipsum( struct sentence_pair *sentence_table ) {
 
 const 	char   *lorem_ipsum_filename = "./lorem_ipsum.txt";
 		int     lip 				 = 0;
@@ -164,7 +172,7 @@ const 	char   *lorem_ipsum_filename = "./lorem_ipsum.txt";
 	return bytes_read;
 }
 
-void help ( )
+void help( )
 {
 	struct sentence_pair *sentence_table = NULL;
 	sentence_table = malloc( sizeof( struct sentence_pair ) );
@@ -175,25 +183,60 @@ void help ( )
 	else {
 		fprintf( stderr, "Help is not available at this time.\n" );
 	}
+
+	return;
 }
 
-
-int main( int argc, char* argv[] )
+void parse_command_args( int argc, char *argv[] )
 {
+	char c = 0;
 
-	struct sentence_pair *sentence_table = NULL;
+	args.read_lorem = 1;
+
+	opterr = 0;
+	while( ( c = getopt (argc, argv, "f:" ) ) != -1) {
+		switch (c) {
+			case 'f':
+				if( NULL == optarg ) {
+					fprintf( stderr, "Filename not set. Exiting!\n");
+					exit( -1 );
+				}
+				args.read_lorem = 0;
+				args.filename = optarg;
+				break;
+			case '?':
+				if( 'f' == optopt ) {
+					fprintf( stderr, "Option -%c requires an argument.\n", optopt );
+				}
+				else if( isprint( optopt ) ) {
+					fprintf( stderr, "Unknown option `-%c'.\n", optopt );
+				}
+				else {
+					fprintf( stderr, "Unknown option character `\\x%x'.\n", optopt );
+				}
+				break;
+			default:
+				help( );
+				abort( );
+				break;
+		}
+	}
+
+	return;
+}
+
+int main( int argc, char *argv[] )
+{
+	struct  sentence_pair *sentence_table = NULL;
 
 	sentence_table = malloc( sizeof( struct sentence_pair ) );
 
-	// in case of emergency
+	// in case of emergency grake blass
 	if( argc - 1 > 0 ) {
-		help( );
-		exit( 1 );
+		parse_command_args( argc, argv );
 	}
 
 	initialize( sentence_table );
 
-	assert( argc );
-	assert( *argv );
 	return 0;
 }
