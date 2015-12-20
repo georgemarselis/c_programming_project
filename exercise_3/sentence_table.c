@@ -59,6 +59,7 @@ B. Mία συνάρτηση που θα υπολογίζει το πλήθος �
 #include <ctype.h>
 #include <errno.h>
 #include <fcntl.h>
+#include <locale.h>
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
@@ -85,6 +86,7 @@ struct command_line {
 
 struct command_line args = { 0, "" };
 
+int    sanity_ok( void );
 size_t read_table( struct sentence_pair *sentence_table, char *filename );
 int    write_table( struct sentence_pair  sentence_table[], int  size );
 void   destroy_table( struct sentence_pair sentence_table[], int  size );
@@ -98,7 +100,17 @@ int   *find_location( struct sentence_pair sentence_table[], int size );
 int    find_word( char *word );
 
 
+int sanity_ok( ){
 
+	int sanity_status = 1;
+
+	if( !setlocale( LC_CTYPE, "" ) ) {
+		fprintf( stderr, "LC_CTYPE not set! Please set appropriatelly and run again.\n" );
+		sanity_status = 0;
+    }
+
+    return sanity_status;
+}
 
 
 void initialize ( struct sentence_pair *sentence_table )
@@ -230,6 +242,11 @@ int main( int argc, char *argv[] )
 	struct  sentence_pair *sentence_table = NULL;
 
 	sentence_table = malloc( sizeof( struct sentence_pair ) );
+
+	// check the status of the terminal
+	if( !sanity_ok( ) ) {
+		exit( EXIT_FAILURE );
+	}
 
 	// in case of emergency grake blass
 	if( argc - 1 > 0 ) {
