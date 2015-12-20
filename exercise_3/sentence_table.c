@@ -55,11 +55,18 @@ B. Mία συνάρτηση που θα υπολογίζει το πλήθος �
 	που αντιγράφει το αλφαριθμητικό t στο αλφαριθμητικό s.
 */
 
+#include <assert.h>
+#include <ctype.h>
+#include <errno.h>
+#include <fcntl.h>
 #include <stdio.h>
 #include <stdlib.h>
-#include <ctype.h>
 #include <string.h>
-#include <assert.h>
+#include <unistd.h>
+
+#include <sys/types.h>
+#include <sys/uio.h>
+#include <sys/stat.h>
 
 #ifdef BY_THE_BOOK
 #define M 1024
@@ -68,46 +75,124 @@ B. Mία συνάρτηση που θα υπολογίζει το πλήθος �
 
 
 struct sentence_pair {  
-#ifdef BY_THE_BOOK
-	char sentence[M];
-	int length;
-#else
 	char *sentence;    
-#endif
 };  
 
-#ifdef DEBUG
-int read_table(  struct sentence_pair *sentence_table,   int *size );
+unsigned long read_table(  struct sentence_pair *sentence_table );
 int write_table( struct sentence_pair  sentence_table[], int  size );
 void destroy_table( struct sentence_pair sentence_table[], int  size );
-#endif
 
-void initialize   ( struct sentence_pair sentence_table[], int size );
+void help( void );
+void initialize   ( struct sentence_pair *sentence_table );
 int  count_words  ( struct sentence_pair sentence_table[], int size );
 int *find_location( struct sentence_pair sentence_table[], int size );
 
+ssize_t read_loremipsum( struct sentence_pair *sentence_table );
+
 int find_word( char *word );
 
-unsigned long read_table(  struct sentence_pair *sentence_table,   int *size )
+
+void initialize ( struct sentence_pair *sentence_table ) 
 {
-	unsigned long bytes_read = 0;
-#ifdef LOREM_IPSUM
 
-	// if LOREM_IPSUM is defined during compile, read in the Star Wars[tm]
-	// Lorem Ipsum lorem_ipsum.txt; use that for sample input
-
+#ifdef DEBUG
+	read_loremipsum( sentence_table );
+#else
+	read_table( sentence_table );
 #endif
 
-	assert( sentence_table );
-	assert( *size );
+	return;
+}
+
+
+unsigned long read_table( struct sentence_pair *sentence_table )
+{
+	unsigned long bytes_read = 0;
+
+#ifdef LOREM_IPSUM
+
+
+	// if LOREM_IPSUM is defined during compile, read in the Star Wars[tm]
+	// Lorem Ipsum lorem_ipsum.txt; return content to use as sample input
+	bytes_read = read_loremipsum( sentence_table );
+
+#endif
 
 	return bytes_read;
 }
 
+ssize_t read_loremipsum( struct sentence_pair *sentence_table ) {
+
+const 	char   *lorem_ipsum_filename = "./lorem_ipsum.txt";
+		int     lip 				 = 0;
+		int     mode                 = O_RDONLY | O_NOFOLLOW;
+		int     multiplier           = 4800;
+		char   *buffer               = NULL;
+		size_t  filesize             = 0;
+		ssize_t bytes_read           = 0;
+		struct  stat *file           = malloc( sizeof ( struct stat ) );
+
+	buffer = malloc( sizeof( char ) * multiplier + 1 );
+
+	lip = open( lorem_ipsum_filename, mode );
+	if( lip < 0 ) {
+		fprintf( stderr, "Can't open input file %s!\n", lorem_ipsum_filename );
+		exit( -1 );
+	}
+
+	if( -1 == fstat( lip, file ) ) {
+		fprintf( stderr, "Cannot stat %s. Exiting\n", lorem_ipsum_filename );
+		exit( -1 );
+	}
+
+	filesize = file->st_size;
+	bytes_read = read( lip, buffer, filesize );
+	if( 0 == bytes_read || ( errno && -1 == bytes_read ) ) {
+		fprintf( stderr, "Input file %s was empty. Aborting.\n", lorem_ipsum_filename );
+		exit( -1 );
+	}
+	close( lip );
+
+	sentence_table->sentence = malloc( strlen( buffer ) + 1 );
+	if( NULL == strcpy( sentence_table->sentence, buffer ) ) {
+		fprintf( stderr, "Unsuccessful copy from buffer to sentence. Exiting." );
+		exit ( -1 );
+	}
+
+	free( buffer );
+
+	return bytes_read;
+}
+
+void help ( )
+{
+	struct sentence_pair *sentence_table = NULL;
+	sentence_table = malloc( sizeof( struct sentence_pair ) );
+
+	if( read_loremipsum( sentence_table ) > 0 ) {
+		fprintf( stderr , "%s", sentence_table->sentence );
+	}
+	else {
+		fprintf( stderr, "Help is not available at this time.\n" );
+	}
+}
 
 
 int main( int argc, char* argv[] )
 {
+
+	struct sentence_pair *sentence_table = NULL;
+
+	sentence_table = malloc( sizeof( struct sentence_pair ) );
+
+	// in case of emergency
+	if( argc - 1 > 0 ) {
+		help( );
+		exit( 1 );
+	}
+
+	initialize( sentence_table );
+
 	assert( argc );
 	assert( *argv );
 	return 0;
