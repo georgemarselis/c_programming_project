@@ -69,35 +69,25 @@ B. Mία συνάρτηση που θα υπολογίζει το πλήθος �
 #include <sys/uio.h>
 #include <sys/stat.h>
 
-#ifdef BY_THE_BOOK
-#define M 1024
-#define N 1024
-#endif
-
-
 struct sentence_pair {  
 	char *sentence;    
-};  
+};
 
 struct command_line {
-	int read_lorem;
 	char *filename;
 };
 
-struct command_line args = { 0, "" };
+struct command_line args = { NULL };
 
-int    sanity_ok( void );
-size_t read_table( struct sentence_pair *sentence_table, char *filename );
-int    write_table( struct sentence_pair  sentence_table[], int  size );
-void   destroy_table( struct sentence_pair sentence_table[], int  size );
 
+size_t read_table	( struct sentence_pair *sentence_table );
+size_t count_words  ( struct sentence_pair *sentence_table );
+void   destroy_table( struct sentence_pair *sentence_table );
 void   help         ( void );
 void   initialize   ( struct sentence_pair *sentence_table );
 void   parse_command_args( int argc, char *argv[] );
-size_t read_loremipsum( struct sentence_pair *sentence_table );
-int    count_words  ( struct sentence_pair sentence_table[], int size );
-int   *find_location( struct sentence_pair sentence_table[], int size );
-int    find_word( char *word );
+void    find_location( struct sentence_pair *sentence_table, char *word );
+int    sanity_ok	( void );
 
 
 int sanity_ok( ){
@@ -107,9 +97,9 @@ int sanity_ok( ){
 	if( !setlocale( LC_CTYPE, "" ) ) {
 		fprintf( stderr, "LC_CTYPE not set! Please set appropriatelly and run again.\n" );
 		sanity_status = 0;
-    }
+	}
 
-    return sanity_status;
+	return sanity_status;
 }
 
 
@@ -118,57 +108,49 @@ void initialize ( struct sentence_pair *sentence_table )
 
 	unsigned long bytes_read = 0;
 
-	if( args.read_lorem ) {
-		// Read in the Star Wars[tm] Lorem Ipsum from lorem_ipsum.txt;
-		// return content to use as sample input
-		bytes_read = read_loremipsum( sentence_table );
-	}
-	else {
-		bytes_read = read_table( sentence_table, args.filename );
+	bytes_read = read_table( sentence_table );
+	if( !bytes_read ) {
+		fprintf( stderr, "No text loaded for processing." );
+		exit( -1 );
 	}
 
 	return;
 }
 
 
-size_t read_table( struct sentence_pair *sentence_table, char *filename )
-{
-	size_t bytes_read  = 0;
+size_t read_table( struct sentence_pair *sentence_table ) {
 
-	assert( NULL != sentence_table );
-	assert( NULL != filename );
+	char   *filename   = "./lorem_ipsum.txt"; // default
+	int     lip 	   = 0;
+	int     mode	   = O_RDONLY | O_NOFOLLOW;
+	int     multiplier = 4800;
+	char   *buffer     = NULL;
+	size_t  filesize   = 0;
+	ssize_t bytes_read = 0;
+	struct  stat *file = malloc( sizeof ( struct stat ) );
 
-	return bytes_read;
-}
-
-size_t read_loremipsum( struct sentence_pair *sentence_table ) {
-
-const 	char   *lorem_ipsum_filename = "./lorem_ipsum.txt";
-		int     lip 				 = 0;
-		int     mode                 = O_RDONLY | O_NOFOLLOW;
-		int     multiplier           = 4800;
-		char   *buffer               = NULL;
-		size_t  filesize             = 0;
-		ssize_t bytes_read           = 0;
-		struct  stat *file           = malloc( sizeof ( struct stat ) );
-
+	
 	buffer = malloc( sizeof( char ) * multiplier + 1 );
 
-	lip = open( lorem_ipsum_filename, mode );
+	if( args.filename ) {
+		filename = args.filename;
+	}
+
+	lip = open( filename, mode );
 	if( lip < 0 ) {
-		fprintf( stderr, "Can't open input file %s!\n", lorem_ipsum_filename );
+		fprintf( stderr, "Can't open input file %s!\n", filename );
 		exit( -1 );
 	}
 
 	if( -1 == fstat( lip, file ) ) {
-		fprintf( stderr, "Cannot stat %s. Exiting\n", lorem_ipsum_filename );
+		fprintf( stderr, "Cannot stat %s. Exiting\n", filename );
 		exit( -1 );
 	}
 
 	filesize = file->st_size;
 	bytes_read = read( lip, buffer, filesize );
 	if( 0 == bytes_read || ( errno && -1 == bytes_read ) ) {
-		fprintf( stderr, "Input file %s was empty. Aborting.\n", lorem_ipsum_filename );
+		fprintf( stderr, "Input file %s was empty. Exiting.\n", filename );
 		exit( -1 );
 	}
 	close( lip );
@@ -184,12 +166,13 @@ const 	char   *lorem_ipsum_filename = "./lorem_ipsum.txt";
 	return bytes_read;
 }
 
+
 void help( )
 {
 	struct sentence_pair *sentence_table = NULL;
 	sentence_table = malloc( sizeof( struct sentence_pair ) );
 
-	if( read_loremipsum( sentence_table ) > 0 ) {
+	if( read_table( sentence_table ) > 0 ) {
 		fprintf( stderr , "%s", sentence_table->sentence );
 	}
 	else {
@@ -199,22 +182,24 @@ void help( )
 	return;
 }
 
+
 void parse_command_args( int argc, char *argv[] )
 {
 	char c = 0;
 
-	args.read_lorem = 1;
-
 	opterr = 0;
-	while( ( c = getopt (argc, argv, "f:" ) ) != -1) {
+	while( ( c = getopt (argc, argv, "hf:" ) ) != -1) {
 		switch (c) {
 			case 'f':
 				if( NULL == optarg ) {
 					fprintf( stderr, "Filename not set. Exiting!\n");
 					exit( -1 );
 				}
-				args.read_lorem = 0;
 				args.filename = optarg;
+				break;
+			case 'h':
+				help( );
+				exit( -1 );
 				break;
 			case '?':
 				if( 'f' == optopt ) {
@@ -229,7 +214,7 @@ void parse_command_args( int argc, char *argv[] )
 				break;
 			default:
 				help( );
-				abort( );
+				exit( -1 );
 				break;
 		}
 	}
@@ -237,11 +222,69 @@ void parse_command_args( int argc, char *argv[] )
 	return;
 }
 
-int main( int argc, char *argv[] )
+size_t count_words( struct sentence_pair *sentence_table )
+{
+	size_t words_counted = 0;
+	size_t length = 0;
+	char *sentence = sentence_table->sentence;
+
+	// revisit, should be done via strtok()/strsep()
+	while( NULL != ( sentence_table->sentence + length ) ) {
+
+		if( '\t' == *( sentence + length ) ||
+			'\n' == *( sentence + length ) ||
+			' '  == *( sentence + length ) ) {
+			++words_counted;
+		}
+
+		++length;
+	}
+
+	return words_counted ;
+}
+
+
+void find_location( struct sentence_pair *sentence_table, char *word )
+{
+	size_t *locations = NULL;
+
+	locations =  malloc( sizeof (size_t) + 1 );
+
+	assert( word );
+	assert( sentence_table );
+
+	// tokenize sentence_table->sentence on '.'
+	// count how many sentences
+	// order them into a struct sentence_table[count_sentences]
+	// for each sentence_table[ 0..count_sentences ]
+	// strstr? to find the first occurence,
+	//		add sentence location to array
+	// 		then re-posittion at new location and try again
+	//		until NULL for sentence_table->sentence
+
+
+	return;
+}
+
+
+void begin_execution( void )
 {
 	struct  sentence_pair *sentence_table = NULL;
+	char *word = "lorem";
 
 	sentence_table = malloc( sizeof( struct sentence_pair ) );
+
+	initialize( sentence_table );
+	count_words  ( sentence_table );
+	find_location( sentence_table, word );
+
+
+	return;
+}
+
+
+int main( int argc, char *argv[] )
+{
 
 	// check the status of the terminal
 	if( !sanity_ok( ) ) {
@@ -249,11 +292,11 @@ int main( int argc, char *argv[] )
 	}
 
 	// in case of emergency grake blass
-	if( argc - 1 > 0 ) {
+	if( argc > 1 ) {
 		parse_command_args( argc, argv );
 	}
 
-	initialize( sentence_table );
+	begin_execution( );
 
 	return 0;
 }
