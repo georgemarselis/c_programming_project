@@ -120,7 +120,7 @@ void initialize ( struct sentence_pair *sentence_table )
 
 size_t read_table( struct sentence_pair *sentence_table ) {
 
-	char   *filename   = "./lorem_ipsum.txt"; // default
+	char   *filename   = args.filename? args.filename : "./lorem_ipsum.txt"; // default
 	int     lip 	   = 0;
 	int     mode	   = O_RDONLY | O_NOFOLLOW;
 	int     multiplier = 4800;
@@ -131,10 +131,6 @@ size_t read_table( struct sentence_pair *sentence_table ) {
 
 	
 	buffer = malloc( sizeof( char ) * multiplier + 1 );
-
-	if( args.filename ) {
-		filename = args.filename;
-	}
 
 	lip = open( filename, mode );
 	if( lip < 0 ) {
@@ -224,20 +220,13 @@ void parse_command_args( int argc, char *argv[] )
 
 size_t count_words( struct sentence_pair *sentence_table )
 {
-	size_t words_counted = 0;
-	size_t length = 0;
-	char *sentence = sentence_table->sentence;
-
-	// revisit, should be done via strtok()/strsep()
-	while( NULL != ( sentence_table->sentence + length ) ) {
-
-		if( '\t' == *( sentence + length ) ||
-			'\n' == *( sentence + length ) ||
-			' '  == *( sentence + length ) ) {
-			++words_counted;
-		}
-
-		++length;
+	size_t words_counted 	 = 2; // beginning and ending
+	char *pointer  		 	 = sentence_table->sentence;
+	
+	pointer  = sentence_table->sentence;
+	// count words
+	for( pointer = strtok( pointer, " " ); pointer; pointer = strtok( NULL, " " ) ) {
+		words_counted++;
 	}
 
 	return words_counted ;
@@ -271,11 +260,13 @@ void begin_execution( void )
 {
 	struct  sentence_pair *sentence_table = NULL;
 	char *word = "lorem";
+	size_t words_counted = 0;
 
 	sentence_table = malloc( sizeof( struct sentence_pair ) );
 
 	initialize( sentence_table );
-	count_words  ( sentence_table );
+	words_counted = count_words  ( sentence_table );
+	fprintf( stderr , "Words counted %ld\n", words_counted );
 	find_location( sentence_table, word );
 
 
