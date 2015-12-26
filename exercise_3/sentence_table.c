@@ -82,11 +82,11 @@ struct command_line args = { NULL };
 
 size_t read_table	( struct sentence_pair *sentence_table );
 size_t count_words  ( struct sentence_pair *sentence_table );
+size_t find_location( struct sentence_pair *sentence_table );
 void   destroy_table( struct sentence_pair *sentence_table );
 void   help         ( void );
 void   initialize   ( struct sentence_pair *sentence_table );
 void   parse_command_args( int argc, char *argv[] );
-void    find_location( struct sentence_pair *sentence_table, char *word );
 int    sanity_ok	( void );
 
 
@@ -200,12 +200,15 @@ void parse_command_args( int argc, char *argv[] )
 			case '?':
 				if( 'f' == optopt ) {
 					fprintf( stderr, "Option -%c requires an argument.\n", optopt );
+					exit( -1 ) ;
 				}
 				else if( isprint( optopt ) ) {
 					fprintf( stderr, "Unknown option `-%c'.\n", optopt );
+					exit( -1 );
 				}
 				else {
 					fprintf( stderr, "Unknown option character `\\x%x'.\n", optopt );
+					exit( -1 );
 				}
 				break;
 			default:
@@ -220,10 +223,10 @@ void parse_command_args( int argc, char *argv[] )
 
 size_t count_words( struct sentence_pair *sentence_table )
 {
-	size_t words_counted 	 = 2; // beginning and ending
-	char *pointer  		 	 = sentence_table->sentence;
-	
-	pointer  = sentence_table->sentence;
+	size_t words_counted 	= 2; // beginning and ending
+	char *pointer 			= malloc( strlen( sentence_table->sentence ) + 1 );
+
+	strcpy( pointer, sentence_table->sentence );
 	// count words
 	for( pointer = strtok( pointer, " " ); pointer; pointer = strtok( NULL, " " ) ) {
 		words_counted++;
@@ -233,14 +236,28 @@ size_t count_words( struct sentence_pair *sentence_table )
 }
 
 
-void find_location( struct sentence_pair *sentence_table, char *word )
+size_t find_location( struct sentence_pair *sentence_table )
 {
-	size_t *locations = NULL;
+	size_t sentences_counted 	= 1; // beginning and ending
+	char *pointer  		 	 	= NULL;
+	char **sentences 			= NULL;
 
-	locations =  malloc( sizeof (size_t) + 1 );
+	pointer = malloc( strlen( sentence_table->sentence ) + 1 );
 
-	assert( word );
-	assert( sentence_table );
+
+	if( NULL == pointer && ENOMEM == errno ) {
+		fprintf( stdout, "Run out of memory trying to parse sentences.\n" );
+		exit( -1 );
+	}
+	strcpy( pointer, sentence_table->sentence );
+
+	// count sentences
+	for( pointer = strtok( pointer, "." ); pointer; pointer = strtok( NULL, "." ) ) {
+		sentences = realloc( sentences, sizeof( char * ) * sentences_counted );
+		sentences_counted++;
+	}
+
+	fprintf( stdout, "Sentences counted: %ld\n", sentences_counted );
 
 	// tokenize sentence_table->sentence on '.'
 	// count how many sentences
@@ -252,14 +269,13 @@ void find_location( struct sentence_pair *sentence_table, char *word )
 	//		until NULL for sentence_table->sentence
 
 
-	return;
+	return sentences_counted;
 }
 
 
 void begin_execution( void )
 {
 	struct  sentence_pair *sentence_table = NULL;
-	char *word = "lorem";
 	size_t words_counted = 0;
 
 	sentence_table = malloc( sizeof( struct sentence_pair ) );
@@ -267,7 +283,7 @@ void begin_execution( void )
 	initialize( sentence_table );
 	words_counted = count_words  ( sentence_table );
 	fprintf( stderr , "Words counted %ld\n", words_counted );
-	find_location( sentence_table, word );
+	find_location( sentence_table );
 
 
 	return;
