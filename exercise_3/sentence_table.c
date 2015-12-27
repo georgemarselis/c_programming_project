@@ -290,10 +290,18 @@ size_t find_location( struct sentence_pair *sentence_table )
 
 	fprintf( stdout, "Sentences counted: %ld\n", sentences_counted );
 
-	if( NULL == args.term ) { 
+	if( NULL == args.term ) {
+		char *newlinePtr = NULL;
 		buffer = malloc( sizeof( char ) * 100 );
 		fprintf( stdout, "Please enter term to search for: " );
 		fscanf( stdin, "%100s", buffer );
+		while( (newlinePtr = strchr( buffer, '\n' ) ) ){
+			*newlinePtr = '\n';
+		}
+		newlinePtr = NULL;
+		while( (newlinePtr = strrchr( buffer, '\n' ) ) ){
+			*newlinePtr = '\n';
+		}
 	}
 	else {
 		buffer = malloc( sizeof( char ) * strlen( args.term ) + 1 );
