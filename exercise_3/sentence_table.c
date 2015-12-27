@@ -238,22 +238,33 @@ size_t count_words( struct sentence_pair *sentence_table )
 
 size_t find_location( struct sentence_pair *sentence_table )
 {
-	size_t sentences_counted 	= 1; // beginning and ending
+	size_t sentences_counted 	= 0; // beginning and ending
+
 	char *pointer  		 	 	= NULL;
 	char **sentences 			= NULL;
 
 	pointer = malloc( strlen( sentence_table->sentence ) + 1 );
-
-
 	if( NULL == pointer && ENOMEM == errno ) {
 		fprintf( stdout, "Run out of memory trying to parse sentences.\n" );
 		exit( -1 );
 	}
 	strcpy( pointer, sentence_table->sentence );
 
+
 	// count sentences
 	for( pointer = strtok( pointer, "." ); pointer; pointer = strtok( NULL, "." ) ) {
-		sentences = realloc( sentences, sizeof( char * ) * sentences_counted );
+
+		if( '\n' == *pointer ) {
+			pointer = strtok( NULL, "\n" );
+			continue;
+		}
+
+		sentences = realloc( sentences, sizeof( char * ) * (sentences_counted + 1 ) );
+		sentences[ sentences_counted ] = (char *) malloc( strlen( pointer ) + 1 );
+		strcpy( sentences[ sentences_counted ],  pointer );
+#ifdef DEBUG
+		fprintf( stdout, "Sentence: %ld / Token is: %s\n", sentences_counted, pointer);
+#endif
 		sentences_counted++;
 	}
 
@@ -269,7 +280,12 @@ size_t find_location( struct sentence_pair *sentence_table )
 	//		until NULL for sentence_table->sentence
 
 
-	return sentences_counted;
+	for( size_t i = 0; i < sentences_counted ; i++ ) {
+		free( sentences[i] );
+	}
+	free( sentences );
+
+	return (sentences_counted - 1);
 }
 
 
