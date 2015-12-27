@@ -166,16 +166,25 @@ size_t read_table( struct sentence_pair *sentence_table ) {
 
 void help( )
 {
-	struct sentence_pair *sentence_table = NULL;
-	sentence_table = malloc( sizeof( struct sentence_pair ) );
+	fprintf( stderr, "ΠΕΖ2015: Άσκηση 3η: Απαρήθμηση και αναζήτηση λέξεων.\n\n" );
+	fprintf( stderr, "Επιλογές:\n" );
+	fprintf( stderr, "\t-h Προβολή βοήθειας (αυτή εδώ που βλέπετε)\n");
+	fprintf( stderr, "\t-f <αρχειο> Επιλογή αρχείου για αναζήτηση (προεπιλογή: \"lorem_ipsum.txt\"\n");
+	fprintf( stderr, "\t-t <λέξη>   Όρος αναζήτησης\n\n");
 
-	if( read_table( sentence_table ) > 0 ) {
-		fprintf( stderr , "%s", sentence_table->sentence );
-	}
-	else {
-		fprintf( stderr, "Help is not available at this time.\n" );
-	}
-
+	fprintf( stderr, "Παραδείγματα:\n" );
+	fprintf( stderr, "./sentence_table -f lorem_bacon.txt -t round :\n" );
+	fprintf( stderr, "\tΨάχνει το αρχείο lorem_bacon.txt για τη λέξη 'round' ( υπάρχει )\n" );
+	fprintf( stderr, "./sentence_table -f lorem_bacon.txt -t κοκο  :\n" );
+	fprintf( stderr, "\tΨάχνει το αρχείο lorem_bacon.txt για τη λέξη 'κοκο'  ( δεν υπάρχει )\n" );
+	fprintf( stderr, "./sentence_table -f lorem_ipsum.txt -t solo  :\n" );
+	fprintf( stderr, "\tΨάχνει το αρχείο lorem_ipsum.txt για τη λέξη 'solo'  ( υπάρχει )\n" );
+	fprintf( stderr, "./sentence_table -f lorem_ipsum.txt -t bar   :\n" );
+	fprintf( stderr, "\tΨάχνει το αρχείο lorem_ipsum.txt για τη λέξη 'λαλα'  ( δεν υπάρχει )\n" );
+	fprintf( stderr, "./sentence_table -f lorem_bacon.txt          :\n" );
+	fprintf( stderr, "\tΑναζητά στο αρχείο lorem_ipsum.txt όποιον όρο εισάγει δυναμικά ο χρήστης\n" );
+	fprintf( stderr, "./sentence_table                             :\n" );
+	fprintf( stderr, "\tΑναζητά τον όρο που δυναμικά θα εισάγει ο χρήστης στο προεπιλεγμένο αρχείο lorem_ipsum.txt\n" );
 	return;
 }
 
