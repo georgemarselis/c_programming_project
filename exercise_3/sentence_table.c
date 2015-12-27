@@ -75,9 +75,10 @@ struct sentence_pair {
 
 struct command_line {
 	char *filename;
+	char *term;
 };
 
-struct command_line args = { NULL };
+struct command_line args = { NULL, NULL };
 
 
 size_t read_table	( struct sentence_pair *sentence_table );
@@ -184,7 +185,7 @@ void parse_command_args( int argc, char *argv[] )
 	char c = 0;
 
 	opterr = 0;
-	while( ( c = getopt (argc, argv, "hf:" ) ) != -1) {
+	while( ( c = getopt (argc, argv, "ht:f:" ) ) != -1) {
 		switch (c) {
 			case 'f':
 				if( NULL == optarg ) {
@@ -192,6 +193,13 @@ void parse_command_args( int argc, char *argv[] )
 					exit( -1 );
 				}
 				args.filename = optarg;
+				break;
+			case 't':
+				if( NULL == optarg ) {
+					fprintf( stderr, "Term not set. Exiting!\n");
+					exit( -1 );
+				}
+				args.term = optarg;
 				break;
 			case 'h':
 				help( );
@@ -273,19 +281,25 @@ size_t find_location( struct sentence_pair *sentence_table )
 
 	fprintf( stdout, "Sentences counted: %ld\n", sentences_counted );
 
-	buffer = malloc( sizeof( char * ) * 100 );
-	fprintf( stdout, "Please enter term to search for: " );
-	fscanf( stdin, "%100s", buffer );
+	if( NULL == args.term ) { 
+		buffer = malloc( sizeof( char ) * 100 );
+		fprintf( stdout, "Please enter term to search for: " );
+		fscanf( stdin, "%100s", buffer );
+	}
+	else {
+		buffer = malloc( sizeof( char ) * strlen( args.term ) + 1 );
+		strcpy( buffer, args.term );
+	}
 
+	location_counter = malloc( sizeof( int * ) * ( sentences_counted + 1) );
 	for( size_t i = 0; i < sentences_counted ; i++ ) {
 
-		location_counter = realloc( location_counter, sizeof( int * ) * ( i + 1) );
 		if( NULL != strcasestr( sentences[ i ], buffer ) ) {
 			location_counter[i] = 1;
 		}
-		// else {
-		// 	location_counter[i] = 0;
-		// }
+		else {
+			location_counter[i] = 0;
+		}
 	}
 
 	for( size_t i = 0; i < sentences_counted ; i++ ) {
