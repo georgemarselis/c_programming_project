@@ -278,26 +278,42 @@ size_t find_location( struct sentence_pair *sentence_table )
 	fscanf( stdin, "%100s", buffer );
 
 	for( size_t i = 0; i < sentences_counted ; i++ ) {
-		if( strstr( sentences[ i ], buffer ) ) {
-			location_counter = realloc( location_counter, sizeof( int * ) * ( i + 1) );
+
+		location_counter = realloc( location_counter, sizeof( int * ) * ( i + 1) );
+		if( !strstr( sentences[ i ], buffer ) ) {
 			location_counter[i] = 1;
 		}
+		// else {
+		// 	location_counter[i] = 0;
+		// }
 	}
 
 	for( size_t i = 0; i < sentences_counted ; i++ ) {
 		if( location_counter[i] ) {
 			location_found = 1;
+			break;
 		}
 	}
 
 	if( location_found ) {
 
+		size_t cont_process = 0;
 		fprintf( stdout, "\"%s\" appears in sentences ", buffer );
-		for( size_t i = 0; i <= sentences_counted ; i++ ) {
+		for( size_t i = 0; i < sentences_counted ; i++ ) {
 			if( location_counter[i] ) {
-				i == sentences_counted ? 
-					fprintf( stdout, "and %ld.\n", i ):
-					fprintf( stdout, "%ld, ", i );
+				if( i == sentences_counted - 1 ) {
+					fprintf( stdout, " and %ld.\n", i );
+					cont_process = 0;
+				}
+
+				if( cont_process ) {
+					fprintf( stdout, ", " );
+				}
+
+				if( i != sentences_counted - 1 ) {
+					fprintf( stdout, "%ld", i );
+					cont_process = 1;
+				}
 			}
 		}
 		fprintf( stdout, "\n" );
