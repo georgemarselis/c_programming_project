@@ -61,10 +61,10 @@ B. Mία συνάρτηση που θα υπολογίζει το πλήθος �
 
 > git clone https://github.com/georgemarselis/c_programming_project.git && cd c_programming_project; cd c_programming_project/exercise_3 && make clean && make debug;
 
-Επιλογές:\n" );
-	-h Προβολή βοήθειας 
-	-f <αρχειο> Επιλογή αρχείου για αναζήτηση (προεπιλογή: *"lorem_ipsum.txt"*
-	-t <λέξη>   Όρος αναζήτησης
+Επιλογές:
+* -h Προβολή βοήθειας 
+* -f <αρχειο> Επιλογή αρχείου για αναζήτηση (προεπιλογή: *"lorem_ipsum.txt"*
+* -t <λέξη>   Όρος αναζήτησης
 
 Παραδείγματα / Πως τρέχει: 
 
