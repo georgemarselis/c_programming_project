@@ -280,7 +280,7 @@ size_t find_location( struct sentence_pair *sentence_table )
 	for( size_t i = 0; i < sentences_counted ; i++ ) {
 
 		location_counter = realloc( location_counter, sizeof( int * ) * ( i + 1) );
-		if( !strstr( sentences[ i ], buffer ) ) {
+		if( NULL != strcasestr( sentences[ i ], buffer ) ) {
 			location_counter[i] = 1;
 		}
 		// else {
