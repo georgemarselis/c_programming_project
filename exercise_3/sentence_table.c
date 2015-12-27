@@ -239,9 +239,12 @@ size_t count_words( struct sentence_pair *sentence_table )
 size_t find_location( struct sentence_pair *sentence_table )
 {
 	size_t sentences_counted 	= 0; // beginning and ending
+	size_t  *location_counter 	= NULL;
 
+	char *buffer				= NULL;
 	char *pointer  		 	 	= NULL;
 	char **sentences 			= NULL;
+	int location_found 			= 0;
 
 	pointer = malloc( strlen( sentence_table->sentence ) + 1 );
 	if( NULL == pointer && ENOMEM == errno ) {
@@ -270,14 +273,38 @@ size_t find_location( struct sentence_pair *sentence_table )
 
 	fprintf( stdout, "Sentences counted: %ld\n", sentences_counted );
 
-	// tokenize sentence_table->sentence on '.'
-	// count how many sentences
-	// order them into a struct sentence_table[count_sentences]
-	// for each sentence_table[ 0..count_sentences ]
-	// strstr? to find the first occurence,
-	//		add sentence location to array
-	// 		then re-posittion at new location and try again
-	//		until NULL for sentence_table->sentence
+	buffer = malloc( sizeof( char * ) * 100 );
+	fprintf( stdout, "Please enter term to search for: " );
+	fscanf( stdin, "%100s", buffer );
+
+	for( size_t i = 0; i < sentences_counted ; i++ ) {
+		if( strstr( sentences[ i ], buffer ) ) {
+			location_counter = realloc( location_counter, sizeof( int * ) * ( i + 1) );
+			location_counter[i] = 1;
+		}
+	}
+
+	for( size_t i = 0; i < sentences_counted ; i++ ) {
+		if( location_counter[i] ) {
+			location_found = 1;
+		}
+	}
+
+	if( location_found ) {
+
+		fprintf( stdout, "\"%s\" appears in sentences ", buffer );
+		for( size_t i = 0; i <= sentences_counted ; i++ ) {
+			if( location_counter[i] ) {
+				i == sentences_counted ? 
+					fprintf( stdout, "and %ld.\n", i ):
+					fprintf( stdout, "%ld, ", i );
+			}
+		}
+		fprintf( stdout, "\n" );
+	} 
+	else {
+		fprintf( stdout, "\"%s\" term not found in content.\n", buffer );
+	}
 
 
 	for( size_t i = 0; i < sentences_counted ; i++ ) {
@@ -285,7 +312,7 @@ size_t find_location( struct sentence_pair *sentence_table )
 	}
 	free( sentences );
 
-	return (sentences_counted - 1);
+	return sentences_counted;
 }
 
 
