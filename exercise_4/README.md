@@ -41,7 +41,7 @@
 
 # Παραδείγματα:
 
-> ./rational_manipulation --numerator1 -10 --denominator1 100 --numerator2 23 --denominator2 7 : δημιουργία, άρθρηση, πολλαπλασιασμός και προβολή ρητου αποτελέσματος των ρητών ( 10/100, 23/7 )
+> ./rational_manipulation --numerator1 -10 --denominator1 100 --numerator2 23 --denominator2 7 : δημιουργία, άρθρηση, πολλαπλασιασμός και προβολή ρητου αποτελέσματος των ρητών ( -10/100, 23/7 )
 
 # Δείγμα αποτελέσματος
 
