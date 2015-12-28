@@ -4,7 +4,7 @@
 Ορίστε τη δομή rational για αναπαράσταση ρητών (με μέλη της τους δύο
 ακέραιους). Στη συνέχεια ορίστε ως συναρτήσεις τις λειτουργίες:
 
-(α) δημιουργίας ρητού rational make_rational(int α, int b) με δεδομένα
+(α) δημιουργίας ρητού rational make_rational(int a, int b) με δεδομένα
 που δίνει ο χρήστης.
 
 (β) Πρόσθεσης ρητών rational add_rational(rational r1, rational r2) που 
