@@ -1,6 +1,4 @@
-# pez2015
-
-Άσκηση 3η
+# ΠΕΖ2015: Άσκηση 3η
 
 Μία από τις πιο σημαντικές χρήσεις της γλώσσας C είναι στη διαχείριση
 αλφαριθμητικών, και αυτό γιατί η C παρέχει πολλές ευκολίες στη διαχείρισή
@@ -57,7 +55,7 @@ B. Mία συνάρτηση που θα υπολογίζει το πλήθος �
 
 ----
 
-Πως να το κατεβάσετε:
+# Πως να το κατεβάσετε:
 
 > git clone https://github.com/georgemarselis/c_programming_project.git && cd c_programming_project; cd c_programming_project/exercise_3 && make clean && make debug;
 
@@ -66,7 +64,7 @@ B. Mία συνάρτηση που θα υπολογίζει το πλήθος �
 * -f <αρχειο> Επιλογή αρχείου για αναζήτηση (προεπιλογή: *"lorem_ipsum.txt"*
 * -t <λέξη>   Όρος αναζήτησης
 
-Παραδείγματα: 
+# Παραδείγματα: 
 
 > ./sentence_table -f lorem_bacon.txt -t round : Ψάχνει το αρχείο *lorem_bacon.txt* για τη λέξη *"round"* ( υπάρχει )
 > ./sentence_table -f lorem_bacon.txt -t κοκο  : Ψάχνει το αρχείο *lorem_bacon.txt* για τη λέξη *"κοκο"*  ( δεν υπάρχει )
@@ -75,8 +73,53 @@ B. Mία συνάρτηση που θα υπολογίζει το πλήθος �
 > ./sentence_table -f lorem_bacon.txt          : Αναζητά στο αρχείο *lorem_ipsum.txt* όποιον όρο εισάγει δυναμικά ο χρήστης
 > ./sentence_table 	                           : Αναζητά τον όρο που δυναμικά θα εισάγει ο χρήστης στο προεπιλεγμένο αρχείο *lorem_ipsum.txt*
 
+# Δείγμα αποτελέσματος
+> [gmarselis@wintermute exercise_3 (master)]$ ./sentence_table -f lorem_ipsum.txt -t solo
+> Words counted 390
+> Sentence: 0 / Token is: Lucas ipsum dolor sit amet binks kit naboo skywalker calrissian wedge bespin alderaan skywalker biggs
+> Sentence: 1 / Token is:  Mon vader sidious ewok darth thrawn amidala padmé
+> Sentence: 2 / Token is:  Mothma darth yoda mon antilles solo anakin calrissian
+> Sentence: 3 / Token is:  Maul moff lando organa dantooine leia lando jawa
+> Sentence: 4 / Token is:  Qui-gonn mace skywalker jango darth fett greedo
+> Sentence: 5 / Token is:  Darth sebulba vader padmé skywalker
+> Sentence: 6 / Token is:  Anakin antilles hutt skywalker grievous bespin c-3p0 alderaan
+> Sentence: 7 / Token is:  Organa dantooine solo luke organa leia
+> Sentence: 8 / Token is:  Vader moff droid twi'lek wedge tatooine qui-gon
+> Sentence: 9 / Token is:  Ahsoka ahsoka watto mara moff skywalker
+> Sentence: 10 / Token is:  Lando darth tatooine luke skywalker organa
+> Sentence: 11 / Token is:  Yavin yoda wookiee antilles twi'lek windu
+> Sentence: 12 / Token is:  Baba moff droid windu maul
+> Sentence: 13 / Token is:  Antilles bespin wookiee darth solo kit watto
+> Sentence: 14 / Token is:  Ewok han obi-wan maul skywalker mon dagobah ackbar mandalore
+> Sentence: 15 / Token is:  Naboo darth hoth kessel moff hutt organa antilles utapau
+> Sentence: 16 / Token is:  C-3po boba yavin calamari c-3po coruscant calamari aayla
+> Sentence: 17 / Token is:  Tusken raider maul leia dooku skywalker ventress mustafar kashyyyk
+> Sentence: 18 / Token is:  Darth obi-wan lobot zabrak luke kenobi
+> Sentence: 19 / Token is:  Mothma fett hutt zabrak
+> Sentence: 20 / Token is:  Skywalker lobot mace han chewbacca obi-wan dooku hoth darth
+> Sentence: 21 / Token is: Darth solo boba windu organa antilles skywalker
+> Sentence: 22 / Token is:  Padmé jinn darth tatooine kessel binks tatooine
+> Sentence: 23 / Token is:  Moff hutt chewbacca mon mace yavin tatooine
+> Sentence: 24 / Token is:  Hutt sith yoda grievous
+> Sentence: 25 / Token is:  Organa dagobah palpatine kessel leia
+> Sentence: 26 / Token is:  Biggs fett wampa secura
+> Sentence: 27 / Token is:  Wedge luuke darth sidious dantooine solo sidious c-3p0
+> Sentence: 28 / Token is:  Thrawn r2-d2 mon amidala jango
+> Sentence: 29 / Token is:  Kessel qui-gon hutt chewbacca amidala solo fett organa moff
+> Sentence: 30 / Token is:  Antilles tatooine luke darth moff moff luuke zabrak darth
+> Sentence: 31 / Token is:  Hutt fisto amidala greedo yoda kit mandalorians
+> Sentence: 32 / Token is:  Antilles aayla sidious tatooine
+> Sentence: 33 / Token is:  Hutt windu hoth jade solo dooku darth
+> Sentence: 34 / Token is:  Bespin windu palpatine organa dooku
+> Sentence: 35 / Token is:  Greedo mon thrawn solo solo wedge droid moff moff
+> Sentence: 36 / Token is:  Antilles solo ponda jade boba jade biggs binks
+> Sentence: 37 / Token is:  Darth yoda ben hutt
+> Sentence: 38 / Token is:  C-3po kamino moff jinn vader jango tatooine moff
+> Sentence: 39 / Token is:  Antilles windu coruscant amidala darth organa padmé
+> Sentences counted: 40
+> "solo" appears in sentences 2, 7, 13, 21, 27, 29, 33, 35, 36
 
-Λειτουργία:
+# Λειτουργία:
 
 Η λειτοργία χωρίζεται στα εξείς μέρη:
 
