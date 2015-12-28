@@ -28,6 +28,7 @@
 Υλοποιήστε κυρίως πρόγραμμα που να τεστάρει τις συγκεκριμένες συναρτήσεις.
 */
 
+
 #include <assert.h>
 #include <ctype.h>
 #include <errno.h>
@@ -50,8 +51,17 @@ void   help( void );
 void   parse_command_args( int argc, char *argv[] );
 void   begin_execution( void );
 
+struct rational *make_rational(int α, int b);
+ssize_t add_rational( struct rational r1, struct rational r2 );
+ssize_t multiply( struct rational r1, struct rational r2 );
+void print_rational( struct rational r );
+
 ///////////////////////
 
+struct rational {
+	ssize_t numerator;
+	ssize_t denominator;
+};
 
 struct command_line {
 	char *filename;
@@ -148,9 +158,52 @@ void parse_command_args( int argc, char *argv[] )
 	return;
 }
 
+
+struct rational *make_rational(int a, int b)
+{
+	struct rational *r = NULL;
+	assert( a ); assert( b );
+
+	return r;
+}
+
+
+ssize_t add_rational( struct rational r1, struct rational r2 )
+{
+	ssize_t result = 0;
+
+	return result;
+}
+
+
+ssize_t multiply( struct rational r1, struct rational r2 )
+{
+	ssize_t result = 0;
+
+	return result;
+}
+
+
+void print_rational( struct rational r )
+{
+
+	return;
+}
+
+
 void begin_execution( void )
 {
 
+	int a = 0, b = 0;
+	ssize_t result = 0;
+	struct rational *r = NULL;
+	struct rational r1;
+	struct rational r2;
+
+	r = make_rational( a, b);
+	result = add_rational( r1, r2 );
+	result = multiply( r1, r2 );
+	print_rational( *r );
 
 	return;
 }
