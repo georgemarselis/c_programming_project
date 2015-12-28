@@ -34,6 +34,7 @@
 #include <errno.h>
 #include <fcntl.h>
 #include <getopt.h>
+#include <limits.h>
 #include <locale.h>
 #include <stdio.h>
 #include <stdlib.h>
@@ -180,8 +181,11 @@ void parse_command_args( int argc, char *argv[] )
 		}
 	}
 
-	fprintf( stdout, "%ld/%ld, %ld/%ld\n", r1.numerator, r1.denominator, r2.numerator, r2.denominator );
-	exit( -1 );
+#ifdef DEBUG
+	fprintf( stdout, "Parsed input was: %ld/%ld, %ld/%ld\n", r1.numerator, r1.denominator, r2.numerator, r2.denominator );
+#endif
+
+	return;
 }
 
 
@@ -189,14 +193,22 @@ struct rational *make_rational( ssize_t a, ssize_t b)
 {
 	struct rational *r = NULL;
 	ssize_t gcd = 0;
+	ssize_t gcd_a = 0;
+	ssize_t gcd_b = 0;
 
-	gcd = greatest_common_denominator( a, b );
+	gcd = greatest_common_denominator( labs( a ), labs( b ) );
 
-	// once gcd is discovered, modulus division on each
-	// then store each result into struct and send it off
+	if( !gcd ) {
+		gcd_b = b; gcd_a = a;	
+	}
+	else {
+		gcd_b = b / gcd ; gcd_a = a / gcd ;
+	}
 
-	// check to see the sign of both numbers
-	// before turning them into a ration
+	fprintf( stdout, "%ld/%ld reduces to %ld/%ld\n", a, b, gcd_a, gcd_b );
+	r = malloc( sizeof( struct rational ) );
+	r->numerator   = gcd_a;
+	r->denominator = gcd_b;
 
 	return r;
 }
@@ -234,29 +246,102 @@ ssize_t multiply_rational( struct rational r1, struct rational r2 )
 
 void print_rational( struct rational r )
 {
-	assert( r.numerator );
+	fprintf( stdout, "Rational is %ld/%ld\n", r.numerator, r.denominator );
 
 	return;
 }
 
-
 ssize_t greatest_common_denominator( ssize_t a, ssize_t b )
 {
-	// check for proper input
-	if( a == 0 || b == 0 ) { return 0; }
-	if (a < 0) { a = -a; }
-	if (b < 0) { b = -b; }
 
-	return greatest_common_denominator( b % a, a );
+	ssize_t c = 0;
+	while ( 0 != a ) {
+		c = a; a = b%a;  b = c;
+  	}
+
+	return b;
 }
-
 
 void initialize( void )
 {
+	char *newlinePtr = NULL;
+	char *buffer     = malloc( sizeof( char) * 100 );
+	int rvalue       = 0;
+	
+	while( !r1.numerator && !rvalue ) {
 
-	// check r1, r2 are set from commandline
-	// if not, prompt user, parse
-	// send them off to make_rational( )
+		fprintf( stdout, "Numerator 1 is not set. Please enter a value: " );
+		fscanf( stdin, "%s", buffer );
+		while( (newlinePtr = strchr( buffer, '\n' ) ) ) {
+			*newlinePtr = '\n';
+		}
+		newlinePtr = NULL;
+		while( (newlinePtr = strrchr( buffer, '\n' ) ) ) {
+			*newlinePtr = '\n';
+		}
+		// check to see if contents of buffer is a number.
+		rvalue = 1;
+		if( EINVAL == errno && !(r1.numerator = strtoll( buffer, &newlinePtr, 10 ) ) ) {
+			rvalue = 0;
+		}
+	}
+
+	rvalue = 0;
+	while( !r1.denominator && !rvalue ) {
+
+		fprintf( stdout, "Denominator 1 is not set. Please enter a value: " );
+		fscanf( stdin, "%s", buffer );
+		while( (newlinePtr = strchr( buffer, '\n' ) ) ) {
+			*newlinePtr = '\n';
+		}
+		newlinePtr = NULL;
+		while( (newlinePtr = strrchr( buffer, '\n' ) ) ) {
+			*newlinePtr = '\n';
+		}
+		// check to see if contents of buffer is a number.
+		rvalue = 1;
+		if( EINVAL == errno && !(r1.denominator = strtoll( buffer, &newlinePtr, 10 ) ) ) {
+			rvalue = 0;
+		}
+	}
+
+	rvalue = 0;
+	while( !r2.numerator && !rvalue ) {
+
+		fprintf( stdout, "Numerator 1 is not set. Please enter a value: " );
+		fscanf( stdin, "%s", buffer );
+		while( (newlinePtr = strchr( buffer, '\n' ) ) ) {
+			*newlinePtr = '\n';
+		}
+		newlinePtr = NULL;
+		while( (newlinePtr = strrchr( buffer, '\n' ) ) ) {
+			*newlinePtr = '\n';
+		}
+		// check to see if contents of buffer is a number.
+		rvalue = 1;
+		if( EINVAL == errno && !(r2.numerator = strtoll( buffer, &newlinePtr, 10 ) ) ) {
+			rvalue = 0;
+		}
+	}
+
+	rvalue = 0;
+	while( !r2.denominator && !rvalue ) {
+
+		fprintf( stdout, "denominator 1 is not set. Please enter a value: " );
+		fscanf( stdin, "%s", buffer );
+		while( (newlinePtr = strchr( buffer, '\n' ) ) ) {
+			*newlinePtr = '\n';
+		}
+		newlinePtr = NULL;
+		while( (newlinePtr = strrchr( buffer, '\n' ) ) ) {
+			*newlinePtr = '\n';
+		}
+		// check to see if contents of buffer is a number.
+		rvalue = 1;
+		if( EINVAL == errno && !(r2.denominator = strtoll( buffer, &newlinePtr, 10 ) ) ) {
+			rvalue = 0;
+		}
+	}
 
 	return;
 }
@@ -265,17 +350,20 @@ void initialize( void )
 void begin_execution( void )
 {
 
-	ssize_t a = 0, b = 0;
-	ssize_t result = 0;
-	struct rational *r = NULL;
-	struct rational r1;
-	struct rational r2;
+	struct rational *rr1 = NULL;
+	struct rational *rr2 = NULL;
 
 	initialize( );
-	r = make_rational( a, b);
-	result = add_rational( r1, r2 );
-	result = multiply_rational( r1, r2 );
-	print_rational( *r );
+	rr1 = make_rational( r1.numerator, r1.denominator );
+	rr2 = make_rational( r2.numerator, r2.denominator );
+
+	// print result
+	fprintf( stdout, "r1 is %ld/%ld and r2 is %ld/%ld\n", rr1->numerator, rr1->denominator, rr2->numerator, rr2->denominator );
+	fprintf( stdout, "The addition of r1 and r2 is %ld\n", add_rational( *rr1, *rr2 ) );
+	fprintf( stdout, "The product  of r1 and r2 is %ld\n", multiply_rational( *rr1, *rr2 ) );
+	// print rational
+	fprintf( stdout, "r1: "); print_rational( *rr1 );
+	fprintf( stdout, "r2: "); print_rational( *rr2 );
 
 	return;
 }
