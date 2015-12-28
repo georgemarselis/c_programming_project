@@ -45,6 +45,14 @@
 
 # Δείγμα αποτελέσματος
 
+> [gmarselis@wintermute exercise_4 (master)]$ clear; ./rational_manipulation --numerator1 -10 --denominator1 100 --numerator2 23 --denominator2 -7
+> Parsed input was: -10/100, 23/-7
+> -10/100 reduces to -1/10
+> 23/-7 reduces to -23/7
+> r1: Rational is -1/10
+> r2: Rational is -23/7
+> The addition of r1 and r2 is -237/70
+> The product  of r1 and r2 is 23/70
 
 # Λειτουργία:
 
