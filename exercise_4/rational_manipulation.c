@@ -102,7 +102,7 @@ void help( void )
 
 void parse_command_args( int argc, char *argv[] )
 {
-	int c = 1;
+	int c = 1, n1 = 0, d1 = 0, n2 = 0, d2 = 0; // track argument state
 
 	while( c ) {
 		static struct option long_options[] = {
@@ -144,28 +144,32 @@ void parse_command_args( int argc, char *argv[] )
 				exit( 0 );
 				break;
 			case 'n':
-				if( !sscanf( optarg, "%ld", &r1.numerator ) ) {
+				if( !n1 && !sscanf( optarg, "%ld", &r1.numerator ) ) {
 					fprintf( stderr, "\"%s\" is not an integer\n", optarg );
 					exit( -1 );
 				}
+				n1 = 1;
 				break;
 			case 'd':
-				if( !sscanf( optarg, "%ld", &r1.denominator ) ) {
+				if( !d1 && !sscanf( optarg, "%ld", &r1.denominator ) ) {
 					fprintf( stderr, "\"%s\" is not an integer\n", optarg );
 					exit( -1 );
 				}
+				d1 = 1;
 				break;
 			case 'f':
-				if( !sscanf( optarg, "%ld", &r2.numerator ) ) {
+				if( !n2 && !sscanf( optarg, "%ld", &r2.numerator ) ) {
 					fprintf( stderr, "\"%s\" is not an integer\n", optarg );
 					exit( -1 );
 				}
+				n2 = 1;
 				break;
 			case 's':
-				if( !sscanf( optarg, "%ld", &r2.denominator ) ) {
+				if( !d2 && !sscanf( optarg, "%ld", &r2.denominator ) ) {
 					fprintf( stderr, "\"%s\" is not an integer\n", optarg );
 					exit( -1 );
 				}
+				d2 = 1;
 				break;
 			case '?':
 				// getopt_long already printed an error message.
