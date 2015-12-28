@@ -121,7 +121,7 @@ void parse_command_args( int argc, char *argv[] )
 
 		/* getopt_long stores the option index here. */
 		int option_index = 0;
-		c = getopt_long (argc, argv, "abc:d:f:", long_options, &option_index);
+		c = getopt_long (argc, argv, "n:d:f:s:", long_options, &option_index);
 
 		if( -1 == c ) {
 			break;
@@ -195,6 +195,9 @@ struct rational *make_rational( ssize_t a, ssize_t b)
 	// once gcd is discovered, modulus division on each
 	// then store each result into struct and send it off
 
+	// check to see the sign of both numbers
+	// before turning them into a ration
+
 	return r;
 }
 
@@ -248,6 +251,17 @@ ssize_t greatest_common_denominator( ssize_t a, ssize_t b )
 }
 
 
+void initialize( void )
+{
+
+	// check r1, r2 are set from commandline
+	// if not, prompt user, parse
+	// send them off to make_rational( )
+
+	return;
+}
+
+
 void begin_execution( void )
 {
 
@@ -257,6 +271,7 @@ void begin_execution( void )
 	struct rational r1;
 	struct rational r2;
 
+	initialize( );
 	r = make_rational( a, b);
 	result = add_rational( r1, r2 );
 	result = multiply_rational( r1, r2 );
