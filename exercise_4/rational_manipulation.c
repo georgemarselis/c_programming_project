@@ -54,8 +54,8 @@ void   parse_command_args( int argc, char *argv[] );
 void   begin_execution( void );
 
 struct rational *make_rational( ssize_t a, ssize_t b );
-ssize_t add_rational( struct rational r1, struct rational r2 );
-ssize_t multiply_rational( struct rational r1, struct rational r2 );
+void    add_rational( struct rational r1, struct rational r2 );
+void    multiply_rational( struct rational r1, struct rational r2 );
 void 	print_rational( struct rational r );
 ssize_t	greatest_common_denominator( ssize_t a, ssize_t b );
 
@@ -205,6 +205,15 @@ struct rational *make_rational( ssize_t a, ssize_t b)
 		gcd_b = b / gcd ; gcd_a = a / gcd ;
 	}
 
+	if( gcd_b < 0 ) {
+		gcd_b =   labs( gcd_b );
+		gcd_a = - labs( gcd_a );
+	}
+	else if( gcd_b < 0 && gcd_a < 0 ){
+		gcd_b = labs( gcd_b );
+		gcd_a = labs( gcd_a );
+	}
+
 	fprintf( stdout, "%ld/%ld reduces to %ld/%ld\n", a, b, gcd_a, gcd_b );
 	r = malloc( sizeof( struct rational ) );
 	r->numerator   = gcd_a;
@@ -213,40 +222,93 @@ struct rational *make_rational( ssize_t a, ssize_t b)
 	return r;
 }
 
-
-ssize_t add_rational( struct rational r1, struct rational r2 )
+void add_rational( struct rational r1, struct rational r2 )
 {
-	ssize_t result = 0;
-
 	ssize_t num1 = r1.numerator;
 	ssize_t den1 = r1.denominator;
 	ssize_t num2 = r2.numerator;
 	ssize_t den2 = r2.denominator;
 
-	result = (num1 * den2 + num2 * den1)/(den1 * den2);
+	ssize_t gcd = 0;
+	ssize_t gcd_a = 0;
+	ssize_t gcd_b = 0;
 
-	return result;
+	gcd = greatest_common_denominator( labs( num1 * den2 + num2 * den1 ), labs( den1 * den2 ) );
+
+	// num1/den1 + num2/den2 = (num1 * den2 + num2 * den1)/(den1 * den2),
+	if( !gcd ) {
+		gcd_b =  den1 * den2 ; gcd_a = ( num1 * den2 + num2 * den1 );	
+	}
+	else {
+		gcd_b =  den1 * den2  / gcd ; gcd_a = ( num1 * den2 + num2 * den1 ) / gcd ;
+	}
+
+	if( gcd_b < 0 ) {
+		gcd_b =   labs( gcd_b );
+		gcd_a = - labs( gcd_a );
+	}
+	else if( gcd_b < 0 && gcd_a < 0 ){
+		gcd_b = labs( gcd_b );
+		gcd_a = labs( gcd_a );
+	}
+
+	fprintf( stdout, "The addition of r1 and r2 is %ld/%ld\n", gcd_a, gcd_b );
+
+	return;
 }
 
 
-ssize_t multiply_rational( struct rational r1, struct rational r2 )
+void multiply_rational( struct rational r1, struct rational r2 )
 {
-	ssize_t result = 0;
-
 	ssize_t num1 = r1.numerator;
 	ssize_t den1 = r1.denominator;
 	ssize_t num2 = r2.numerator;
 	ssize_t den2 = r2.denominator;
 
-	result = (num1 * num2)/(den1 * den2);
+	ssize_t gcd = 0;
+	ssize_t gcd_a = 0;
+	ssize_t gcd_b = 0;
 
-	return result;
+	gcd = greatest_common_denominator( labs( num1 * num2 ), labs( den1 * den2 ) );
+
+	// num1/den1 * num2/den2 = (num1 * num2)/(den1 * den2).
+	if( !gcd ) {
+		gcd_b = den1 * den2; gcd_a = num1 * num2;	
+	}
+	else {
+		gcd_b = den1 * den2 / gcd ; gcd_a = num1 * num2 / gcd ;
+	}
+
+	if( gcd_b < 0 ) {
+		gcd_b =   labs( gcd_b );
+		gcd_a = - labs( gcd_a );
+	}
+	else if( gcd_b < 0 && gcd_a < 0 ){
+		gcd_b = labs( gcd_b );
+		gcd_a = labs( gcd_a );
+	}
+
+	fprintf( stdout, "The product  of r1 and r2 is %ld/%ld\n", gcd_a, gcd_b );
+
+	return;
 }
 
 
 void print_rational( struct rational r )
 {
-	fprintf( stdout, "Rational is %ld/%ld\n", r.numerator, r.denominator );
+	ssize_t gcd_a = r.numerator;
+	ssize_t gcd_b = r.denominator;
+
+	if( gcd_b < 0 ) {
+		gcd_b =   labs( gcd_b );
+		gcd_a = - labs( gcd_a );
+	}
+	else if( gcd_b < 0 && gcd_a < 0 ){
+		gcd_b = labs( gcd_b );
+		gcd_a = labs( gcd_a );
+	}
+
+	fprintf( stdout, "Rational is %ld/%ld\n", gcd_a, gcd_b );
 
 	return;
 }
@@ -357,13 +419,12 @@ void begin_execution( void )
 	rr1 = make_rational( r1.numerator, r1.denominator );
 	rr2 = make_rational( r2.numerator, r2.denominator );
 
-	// print result
-	fprintf( stdout, "r1 is %ld/%ld and r2 is %ld/%ld\n", rr1->numerator, rr1->denominator, rr2->numerator, rr2->denominator );
-	fprintf( stdout, "The addition of r1 and r2 is %ld\n", add_rational( *rr1, *rr2 ) );
-	fprintf( stdout, "The product  of r1 and r2 is %ld\n", multiply_rational( *rr1, *rr2 ) );
 	// print rational
 	fprintf( stdout, "r1: "); print_rational( *rr1 );
 	fprintf( stdout, "r2: "); print_rational( *rr2 );
+	// print result
+	add_rational( *rr1, *rr2 );
+	multiply_rational( *rr1, *rr2 );
 
 	return;
 }
