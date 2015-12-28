@@ -164,7 +164,7 @@ size_t read_table( struct sentence_pair *sentence_table ) {
 }
 
 
-void help( )
+void help( void )
 {
 	fprintf( stderr, "ΠΕΖ2015: Άσκηση 3η: Απαρήθμηση και αναζήτηση λέξεων.\n\n" );
 	fprintf( stderr, "Επιλογές:\n" );
