@@ -19,7 +19,7 @@
 (δ) μία συνάρτηση void print_rational( rational r ), που να εμφανίζει 
 τον ρητό r στην οθόνη ως κλάσμα.
 
-Επισημαίνεται ότι όες οι συναρτήσεις θα πρέπει (με εύρεση του μέγιστου
+Επισημαίνεται ότι όλες οι συναρτήσεις θα πρέπει (με εύρεση του μέγιστου
 κοινού διαιρέτη, αριθμητή και παρονομαστή) να μετατρέπουν τους ρητούς 
 αριθμούς που τους δίνονται και να δίνουν το αποτέλεσμα στους μικρότερους
 δυνατούς όρους. Για παράδειγμα ο πολλαπλασιασμός 1/2 επί 2/3 θα πρέπει
@@ -51,10 +51,11 @@ void   help( void );
 void   parse_command_args( int argc, char *argv[] );
 void   begin_execution( void );
 
-struct rational *make_rational(int α, int b);
+struct rational *make_rational( ssize_t a, ssize_t b );
 ssize_t add_rational( struct rational r1, struct rational r2 );
-ssize_t multiply( struct rational r1, struct rational r2 );
-void print_rational( struct rational r );
+ssize_t multiply_rational( struct rational r1, struct rational r2 );
+void 	print_rational( struct rational r );
+ssize_t	find_common_denominator( ssize_t a, ssize_t b );
 
 ///////////////////////
 
@@ -86,31 +87,14 @@ int sanity_ok( void )
 void initialize ( void )
 {
 
-	unsigned long bytes_read = 0;
-
-	bytes_read = read_table( );
-	if( !bytes_read ) {
-		fprintf( stderr, "No text loaded for processing." );
-		exit( -1 );
-	}
 
 	return;
 }
 
 
-size_t read_table( void )
-{
-
-	size_t bytes_read = 0;
-
-	return bytes_read;
-
-}
-
-
 void help( void ) 
 {
-	fprintf( stderr, "ΠΕΖ2015: Άσκηση 3η: Απαρήθμηση και αναζήτηση λέξεων.\n\n" );
+	fprintf( stderr, "ΠΕΖ2015: Άσκηση 4η: Κλάσματα.\n\n" );
 	fprintf( stderr, "Επιλογές:\n" );
 	fprintf( stderr, "\t-h Προβολή βοήθειας (αυτή εδώ που βλέπετε)\n");
 	fprintf( stderr, "\t-f <αρχειο> Επιλογή αρχείου για αναζήτηση (προεπιλογή: \"lorem_ipsum.txt\"\n");
@@ -159,10 +143,17 @@ void parse_command_args( int argc, char *argv[] )
 }
 
 
-struct rational *make_rational(int a, int b)
+struct rational *make_rational( ssize_t a, ssize_t b)
 {
 	struct rational *r = NULL;
+	ssize_t gcd = 0;
+
 	assert( a ); assert( b );
+
+	gcd = find_common_denominator( a, b );
+
+	// once gcd is discovered, modulus division on each
+	// then store each result into struct and send it off
 
 	return r;
 }
@@ -172,13 +163,27 @@ ssize_t add_rational( struct rational r1, struct rational r2 )
 {
 	ssize_t result = 0;
 
+	ssize_t num1 = r1.numerator;
+	ssize_t den1 = r1.denominator;
+	ssize_t num2 = r2.numerator;
+	ssize_t den2 = r2.denominator;
+
+	result = (num1 * den2 + num2 * den1)/(den1 * den2);
+
 	return result;
 }
 
 
-ssize_t multiply( struct rational r1, struct rational r2 )
+ssize_t multiply_rational( struct rational r1, struct rational r2 )
 {
 	ssize_t result = 0;
+
+	ssize_t num1 = r1.numerator;
+	ssize_t den1 = r1.denominator;
+	ssize_t num2 = r2.numerator;
+	ssize_t den2 = r2.denominator;
+
+	result = (num1 * num2)/(den1 * den2);
 
 	return result;
 }
@@ -186,15 +191,26 @@ ssize_t multiply( struct rational r1, struct rational r2 )
 
 void print_rational( struct rational r )
 {
+	assert( r.numerator );
 
 	return;
+}
+
+
+ssize_t find_common_denominator( ssize_t a, ssize_t b )
+{
+	ssize_t result = 0;
+
+	assert( a ); assert( b );
+
+	return result;
 }
 
 
 void begin_execution( void )
 {
 
-	int a = 0, b = 0;
+	ssize_t a = 0, b = 0;
 	ssize_t result = 0;
 	struct rational *r = NULL;
 	struct rational r1;
@@ -202,7 +218,7 @@ void begin_execution( void )
 
 	r = make_rational( a, b);
 	result = add_rational( r1, r2 );
-	result = multiply( r1, r2 );
+	result = multiply_rational( r1, r2 );
 	print_rational( *r );
 
 	return;
