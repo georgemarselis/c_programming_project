@@ -55,7 +55,7 @@ struct rational *make_rational( ssize_t a, ssize_t b );
 ssize_t add_rational( struct rational r1, struct rational r2 );
 ssize_t multiply_rational( struct rational r1, struct rational r2 );
 void 	print_rational( struct rational r );
-ssize_t	find_common_denominator( ssize_t a, ssize_t b );
+ssize_t	greatest_common_denominator( ssize_t a, ssize_t b );
 
 ///////////////////////
 
@@ -150,7 +150,7 @@ struct rational *make_rational( ssize_t a, ssize_t b)
 
 	assert( a ); assert( b );
 
-	gcd = find_common_denominator( a, b );
+	gcd = greatest_common_denominator( a, b );
 
 	// once gcd is discovered, modulus division on each
 	// then store each result into struct and send it off
@@ -197,13 +197,14 @@ void print_rational( struct rational r )
 }
 
 
-ssize_t find_common_denominator( ssize_t a, ssize_t b )
+ssize_t greatest_common_denominator( ssize_t a, ssize_t b )
 {
-	ssize_t result = 0;
+	// check for proper input
+	if( a == 0 || b == 0 ) { return 0; }
+	if (a < 0) { a = -a; }
+	if (b < 0) { b = -b; }
 
-	assert( a ); assert( b );
-
-	return result;
+	return greatest_common_denominator( b % a, a );
 }
 
 
