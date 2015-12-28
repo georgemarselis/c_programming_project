@@ -33,11 +33,13 @@
 #include <ctype.h>
 #include <errno.h>
 #include <fcntl.h>
+#include <getopt.h>
 #include <locale.h>
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
 #include <unistd.h>
+
 
 #include <sys/types.h>
 #include <sys/uio.h>
@@ -45,7 +47,6 @@
 
 // function prototypes
 int    sanity_ok(  void );
-void   initialize( void );
 size_t read_table( void );
 void   help( void );
 void   parse_command_args( int argc, char *argv[] );
@@ -63,6 +64,9 @@ struct rational {
 	ssize_t numerator;
 	ssize_t denominator;
 };
+
+struct rational r1 = { 0, 0 };
+struct rational r2 = { 0, 0 };
 
 struct command_line {
 	char *filename;
@@ -83,63 +87,97 @@ int sanity_ok( void )
 	return sanity_status;
 }
 
-
-void initialize ( void )
-{
-
-
-	return;
-}
-
-
 void help( void ) 
 {
-	fprintf( stderr, "ΠΕΖ2015: Άσκηση 4η: Κλάσματα.\n\n" );
+	fprintf( stderr, "ΠΕΖ2015: Άσκηση 4η: Ρητοί αριθμοί.\n\n" );
 	fprintf( stderr, "Επιλογές:\n" );
-	fprintf( stderr, "\t-h Προβολή βοήθειας (αυτή εδώ που βλέπετε)\n");
-	fprintf( stderr, "\t-f <αρχειο> Επιλογή αρχείου για αναζήτηση (προεπιλογή: \"lorem_ipsum.txt\"\n");
-
+	fprintf( stderr, "\t-h | --help Προβολή βοήθειας (αυτή εδώ που βλέπετε)\n");
+	fprintf( stderr, "\t--numerator1    Αριθμητής    ρητού1\n");
+	fprintf( stderr, "\t--denominator1  Παρονομαστής ρητού1\n");
+	fprintf( stderr, "\t--numerator2    Αριθμητής    ρητού2\n");
+	fprintf( stderr, "\t--denominator2  Παρονομαστής ρητού2\n");
 
 	return;
 }
-
 
 void parse_command_args( int argc, char *argv[] )
 {
-	char c = 0;
+	int c = 1;
 
-	opterr = 0;
-	while( ( c = getopt (argc, argv, "hf:" ) ) != -1) {
-		switch (c) {
-			case 'f':
-				if( NULL == optarg ) {
-					fprintf( stderr, "Filename not set. Exiting!\n");
-					exit( -1 );
+	while( c ) {
+		static struct option long_options[] = {
+			// // These options set a flag.
+			// {"verbose", no_argument,   &verbose_flag, 1},
+			// {"brief",   no_argument,   &verbose_flag, 0},
+			// // These options don’t set a flag.
+			// // We distinguish them by their indices.
+			{ "help", 		 no_argument, 	   0, 'h' },
+			{ "numerator1",  required_argument, 0, 'n' },
+			{ "denominator1",required_argument, 0, 'd' },
+			{ "numerator2",  required_argument, 0, 'f' },
+			{ "denominator2",required_argument, 0, 's' },
+			{0, 0, 0, 0}
+		};
+
+		/* getopt_long stores the option index here. */
+		int option_index = 0;
+		c = getopt_long (argc, argv, "abc:d:f:", long_options, &option_index);
+
+		if( -1 == c ) {
+			break;
+		}
+
+		switch( c ) {
+			case 0:
+				// If this option set a flag, do nothing else now.
+				if( 0 != long_options[option_index].flag ) {
+					break;
 				}
-				args.filename = optarg;
+				fprintf ( stderr, "option %s", long_options[option_index].name);
+				if (optarg) {
+					fprintf (stderr, " with arg %s", optarg); 
+				}
+				printf ("\n");
 				break;
 			case 'h':
 				help( );
-				exit( -1 );
+				exit( 0 );
 				break;
-			case '?':
-				if( 'f' == optopt ) {
-					fprintf( stderr, "Option -%c requires an argument.\n", optopt );
-					exit( -1 ) ;
-				}
-				else if( isprint( optopt ) ) {
-					fprintf( stderr, "Unknown option `-%c'.\n", optopt );
+			case 'n':
+				if( !sscanf( optarg, "%ld", &r1.numerator ) ) {
+					fprintf( stderr, "\"%s\" is not an integer\n", optarg );
 					exit( -1 );
 				}
 				break;
+			case 'd':
+				if( !sscanf( optarg, "%ld", &r1.denominator ) ) {
+					fprintf( stderr, "\"%s\" is not an integer\n", optarg );
+					exit( -1 );
+				}
+				break;
+			case 'f':
+				if( !sscanf( optarg, "%ld", &r2.numerator ) ) {
+					fprintf( stderr, "\"%s\" is not an integer\n", optarg );
+					exit( -1 );
+				}
+				break;
+			case 's':
+				if( !sscanf( optarg, "%ld", &r2.denominator ) ) {
+					fprintf( stderr, "\"%s\" is not an integer\n", optarg );
+					exit( -1 );
+				}
+				break;
+			case '?':
+				// getopt_long already printed an error message.
+				break;
 			default:
-				help( );
 				exit( -1 );
 				break;
 		}
 	}
 
-	return;
+	fprintf( stdout, "%ld/%ld, %ld/%ld\n", r1.numerator, r1.denominator, r2.numerator, r2.denominator );
+	exit( -1 );
 }
 
 
@@ -147,8 +185,6 @@ struct rational *make_rational( ssize_t a, ssize_t b)
 {
 	struct rational *r = NULL;
 	ssize_t gcd = 0;
-
-	assert( a ); assert( b );
 
 	gcd = greatest_common_denominator( a, b );
 
