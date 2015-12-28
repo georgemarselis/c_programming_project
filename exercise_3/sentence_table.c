@@ -215,7 +215,7 @@ void parse_command_args( int argc, char *argv[] )
 				exit( -1 );
 				break;
 			case '?':
-				if( 'f' == optopt ) {
+				if( 'f' == optopt || 't' == optopt ) {
 					fprintf( stderr, "Option -%c requires an argument.\n", optopt );
 					exit( -1 ) ;
 				}
