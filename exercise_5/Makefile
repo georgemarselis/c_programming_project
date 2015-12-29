@@ -1,8 +1,8 @@
 DEBUGFLAGS   := -Wall -Wextra -ansi -std=c99 -g -DDEBUG
 COMPILEFLAGS := -Wall -Wextra -ansi -std=c99
-SOURCE       := rock_paper_scissors.c
-BINARY       := rock_paper_scissors
-SYMBOLDIR    := rock_paper_scissors.dSYM
+SOURCE       := airline_reservation_system.c
+BINARY       := airline_reservation_system
+SYMBOLDIR    := airline_reservation_system.dSYM
 GCC := gcc
 
 rock_paper_scissors: rock_paper_scissors.c

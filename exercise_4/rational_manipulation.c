@@ -397,7 +397,6 @@ void initialize( void )
 
 void begin_execution( void )
 {
-
 	struct rational *rr1 = NULL;
 	struct rational *rr2 = NULL;
 
@@ -418,7 +417,6 @@ void begin_execution( void )
 
 int main( int argc, char *argv[] )
 {
-
 	// check the status of the terminal
 	if( !sanity_ok( ) ) {
 		exit( EXIT_FAILURE );
