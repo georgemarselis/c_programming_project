@@ -73,13 +73,10 @@ int sanity_ok( void )
 
 void help( void ) 
 {
-	fprintf( stderr, "ΠΕΖ2015: Άσκηση 4η: Ρητοί αριθμοί.\n\n" );
+	fprintf( stderr, "ΠΕΖ2015: Άσκηση 5η: Διαχείρηση κρατήσεων αεροπορικής εταιρίας.\n\n" );
 	fprintf( stderr, "Επιλογές:\n" );
-	fprintf( stderr, "\t-h | --help Προβολή βοήθειας (αυτή εδώ που βλέπετε)\n");
-	fprintf( stderr, "\t--numerator1    Αριθμητής    ρητού1\n");
-	fprintf( stderr, "\t--denominator1  Παρονομαστής ρητού1\n");
-	fprintf( stderr, "\t--numerator2    Αριθμητής    ρητού2\n");
-	fprintf( stderr, "\t--denominator2  Παρονομαστής ρητού2\n");
+	fprintf( stderr, "\t-h | --help       Προβολή βοήθειας (αυτή εδώ που βλέπετε)\n");
+	fprintf( stderr, "\t--file <αρχείο>   Φόρτωση δεδωμένων από από το συγκεκριμένο αρχείο\n");
 
 	return;
 }
@@ -96,11 +93,8 @@ void parse_command_args( int argc, char *argv[] )
 			// {"brief",   no_argument,   &verbose_flag, 0},
 			// // These options don’t set a flag.
 			// // We distinguish them by their indices.
-			{ "help", 		 no_argument, 	   0, 'h' },
-			{ "numerator1",  required_argument, 0, 'n' },
-			{ "denominator1",required_argument, 0, 'd' },
-			{ "numerator2",  required_argument, 0, 'f' },
-			{ "denominator2",required_argument, 0, 's' },
+			{ "help", 		 no_argument, 	    0, 'h' },
+			{ "file",        required_argument, 0, 'f' },
 			{0, 0, 0, 0}
 		};
 
@@ -128,6 +122,9 @@ void parse_command_args( int argc, char *argv[] )
 				help( );
 				exit( 0 );
 				break;
+			case 'f':
+				args.filename = optarg;
+				break;
 				default:
 				exit( -1 );
 				break;
@@ -135,6 +132,9 @@ void parse_command_args( int argc, char *argv[] )
 	}
 
 #ifdef DEBUG
+	if( NULL != args.filename ) {
+		fprintf( stdout, "Filename arguement is: %s\n", args.filename );
+	}
 #endif
 
 	return;
@@ -150,6 +150,7 @@ void initialize( void )
 
 void begin_execution( void )
 {
+	initialize( );
 
 	return;
 }
