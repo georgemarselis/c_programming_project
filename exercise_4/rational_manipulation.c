@@ -54,6 +54,7 @@ void   parse_command_args( int argc, char *argv[] );
 void   begin_execution( void );
 
 struct rational *make_rational( ssize_t a, ssize_t b );
+void    fix_signage( ssize_t *gcd_a, ssize_t *gcd_b );
 void    add_rational( struct rational r1, struct rational r2 );
 void    multiply_rational( struct rational r1, struct rational r2 );
 void 	print_rational( struct rational r );
@@ -188,6 +189,18 @@ void parse_command_args( int argc, char *argv[] )
 	return;
 }
 
+void fix_signage( ssize_t *gcd_a, ssize_t *gcd_b )
+{
+	if( *gcd_b < 0 ) {
+		*gcd_b =   labs( *gcd_b );
+		*gcd_a = - labs( *gcd_a );
+	}
+	else if( *gcd_b < 0 && *gcd_a < 0 ){
+		*gcd_b = labs( *gcd_b );
+		*gcd_a = labs( *gcd_a );
+	}
+	
+}
 
 struct rational *make_rational( ssize_t a, ssize_t b)
 {
@@ -205,14 +218,7 @@ struct rational *make_rational( ssize_t a, ssize_t b)
 		gcd_b = b / gcd ; gcd_a = a / gcd ;
 	}
 
-	if( gcd_b < 0 ) {
-		gcd_b =   labs( gcd_b );
-		gcd_a = - labs( gcd_a );
-	}
-	else if( gcd_b < 0 && gcd_a < 0 ){
-		gcd_b = labs( gcd_b );
-		gcd_a = labs( gcd_a );
-	}
+	fix_signage( &gcd_a, &gcd_b );
 
 	fprintf( stdout, "%ld/%ld reduces to %ld/%ld\n", a, b, gcd_a, gcd_b );
 	r = malloc( sizeof( struct rational ) );
@@ -221,6 +227,7 @@ struct rational *make_rational( ssize_t a, ssize_t b)
 
 	return r;
 }
+
 
 void add_rational( struct rational r1, struct rational r2 )
 {
@@ -243,14 +250,7 @@ void add_rational( struct rational r1, struct rational r2 )
 		gcd_b =  den1 * den2  / gcd ; gcd_a = ( num1 * den2 + num2 * den1 ) / gcd ;
 	}
 
-	if( gcd_b < 0 ) {
-		gcd_b =   labs( gcd_b );
-		gcd_a = - labs( gcd_a );
-	}
-	else if( gcd_b < 0 && gcd_a < 0 ){
-		gcd_b = labs( gcd_b );
-		gcd_a = labs( gcd_a );
-	}
+	fix_signage( &gcd_a, &gcd_b );
 
 	fprintf( stdout, "The addition of r1 and r2 is %ld/%ld\n", gcd_a, gcd_b );
 
@@ -279,14 +279,7 @@ void multiply_rational( struct rational r1, struct rational r2 )
 		gcd_b = den1 * den2 / gcd ; gcd_a = num1 * num2 / gcd ;
 	}
 
-	if( gcd_b < 0 ) {
-		gcd_b =   labs( gcd_b );
-		gcd_a = - labs( gcd_a );
-	}
-	else if( gcd_b < 0 && gcd_a < 0 ){
-		gcd_b = labs( gcd_b );
-		gcd_a = labs( gcd_a );
-	}
+	fix_signage( &gcd_a, &gcd_b );
 
 	fprintf( stdout, "The product  of r1 and r2 is %ld/%ld\n", gcd_a, gcd_b );
 
@@ -299,14 +292,7 @@ void print_rational( struct rational r )
 	ssize_t gcd_a = r.numerator;
 	ssize_t gcd_b = r.denominator;
 
-	if( gcd_b < 0 ) {
-		gcd_b =   labs( gcd_b );
-		gcd_a = - labs( gcd_a );
-	}
-	else if( gcd_b < 0 && gcd_a < 0 ){
-		gcd_b = labs( gcd_b );
-		gcd_a = labs( gcd_a );
-	}
+	fix_signage( &gcd_a, &gcd_b );
 
 	fprintf( stdout, "Rational is %ld/%ld\n", gcd_a, gcd_b );
 
