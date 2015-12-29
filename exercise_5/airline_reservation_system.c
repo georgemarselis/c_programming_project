@@ -19,6 +19,8 @@
 */
 
 
+
+
 #include <assert.h>
 #include <ctype.h>
 #include <errno.h>
@@ -38,17 +40,11 @@
 
 // function prototypes
 int    sanity_ok(  void );
-size_t read_table( void );
+char  *read_file( void );
 void   help( void );
 void   parse_command_args( int argc, char *argv[] );
 void   begin_execution( void );
-
-struct rational *make_rational( ssize_t a, ssize_t b );
-void    fix_signage( ssize_t *gcd_a, ssize_t *gcd_b );
-void    add_rational( struct rational r1, struct rational r2 );
-void    multiply_rational( struct rational r1, struct rational r2 );
-void 	print_rational( struct rational r );
-ssize_t	greatest_common_denominator( ssize_t a, ssize_t b );
+void   parse_buffer( struct airline *reservation, char *buffer );
 
 ///////////////////////
 
@@ -57,6 +53,12 @@ struct command_line {
 };
 
 struct command_line args = { NULL };
+
+struct airline {
+	char *flight_number;
+	uint airplane_seats;
+	uint passenger_count;
+};
 
 int sanity_ok( void )
 {
@@ -131,26 +133,95 @@ void parse_command_args( int argc, char *argv[] )
 		}
 	}
 
-#ifdef DEBUG
-	if( NULL != args.filename ) {
-		fprintf( stdout, "Filename arguement is: %s\n", args.filename );
+	return;
+}
+
+char *read_file( void ) {
+
+	char   *filename     = args.filename? args.filename : "./data.txt"; // default
+	int     lip 	     = 0;
+	int     mode	     = O_RDONLY | O_NOFOLLOW;
+	int     multiplier   = 4800;
+	char   *buffer = NULL;
+	size_t  filesize     = 0;
+	ssize_t bytes_read   = 0;
+	struct  stat *file   = malloc( sizeof ( struct stat ) );
+
+
+	buffer = malloc( sizeof( char ) * multiplier + 1 );
+
+	lip = open( filename, mode );
+	if( lip < 0 ) {
+		fprintf( stderr, "Can't open input file %s!\n", filename );
+		exit( -1 );
 	}
-#endif
+
+	if( -1 == fstat( lip, file ) ) {
+		fprintf( stderr, "Cannot stat %s. Exiting\n", filename );
+		exit( -1 );
+	}
+
+	filesize = file->st_size;
+	bytes_read = read( lip, buffer, filesize );
+	if( 0 == bytes_read || ( errno && -1 == bytes_read ) ) {
+		fprintf( stderr, "Input file %s was empty. Exiting.\n", filename );
+		exit( -1 );
+	}
+	close( lip );
+
+	return buffer;
+}
+
+void parse_buffer( struct airline *reservation, char *buffer )
+{
+	size_t records_counted  = 0;
+	char *pointer 			= NULL;
+
+	if( NULL == buffer ) {
+		fprintf( stderr, "buffer is null. Nothing to parse. Exiting\n." );
+		exit( -1 );
+	}
+
+	pointer = malloc( strlen( buffer ) + 1 );
+	if( NULL == pointer && ENOMEM == errno ) {
+		fprintf( stdout, "Run out of memory trying to parse sentences.\n" );
+		exit( -1 );
+	}
+	if( !strcpy( pointer, buffer ) ) {
+		fprintf( stdout, "Cannot copy buffer to pointer, exiting" );
+		exit( -1 );
+	}
+
+	// each record ends at newline
+	for( pointer = strtok( pointer, "\n" ); pointer; pointer = strtok( NULL, "\n" ) ) {
+		records_counted++;
+	}
 
 	return;
 }
 
-
-void initialize( void )
+void initialize( struct airline *reservation )
 {
 	// load any files needed
+	char   *buffer     = NULL;
+
+	buffer = read_file( );
+#ifdef DEBUG
+	fprintf( stdout, "buffer is:\n%s", buffer );
+#endif
+
+	parse_buffer( reservation, buffer );
+
+	free( buffer );
+
 	return;
 }
 
 
 void begin_execution( void )
 {
-	initialize( );
+	struct airline *reservation = NULL;
+	initialize( reservation );
 
 	return;
 }
