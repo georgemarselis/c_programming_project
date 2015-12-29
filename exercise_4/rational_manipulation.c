@@ -401,8 +401,20 @@ void begin_execution( void )
 	struct rational *rr2 = NULL;
 
 	initialize( );
-	rr1 = make_rational( r1.numerator, r1.denominator );
-	rr2 = make_rational( r2.numerator, r2.denominator );
+	if( r1.denominator ) {
+		rr1 = make_rational( r1.numerator, r1.denominator );
+	} 
+	else {
+		fprintf( stderr, "Denominator is zero. Cannot perform calculations. Exiting\n" );
+		exit( -1 );
+	}
+	if( r2.denominator ) {
+		rr2 = make_rational( r2.numerator, r2.denominator );
+	}
+	else {
+		fprintf( stderr, "Denominator is zero. Cannot perform calculations. Exiting\n" );
+		exit( -1 );
+	}
 
 	// print rational
 	fprintf( stdout, "r1: "); print_rational( *rr1 );
