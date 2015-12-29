@@ -5,7 +5,7 @@ BINARY       := airline_reservation_system
 SYMBOLDIR    := airline_reservation_system.dSYM
 GCC := gcc
 
-rock_paper_scissors: rock_paper_scissors.c
+airline_reservation_system: airline_reservation_system.c
 	$(GCC) $(COMPILEFLAGS) $(SOURCE) -o $(BINARY)	
 
 debug: 
