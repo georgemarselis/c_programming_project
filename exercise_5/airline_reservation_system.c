@@ -87,7 +87,7 @@ void help( void )
 
 void parse_command_args( int argc, char *argv[] ) 
 {
-	int c = 1, n1 = 0, d1 = 0, n2 = 0, d2 = 0; // track argument state
+	int c = 1; // track argument state
 
 	while( c ) {
 		static struct option long_options[] = {
