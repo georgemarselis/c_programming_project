@@ -48,6 +48,7 @@
 
 // function prototypes
 int    sanity_ok(  void );
+void   initialize( void );
 size_t read_table( void );
 void   help( void );
 void   parse_command_args( int argc, char *argv[] );
@@ -229,12 +230,12 @@ struct rational *make_rational( ssize_t a, ssize_t b)
 }
 
 
-void add_rational( struct rational r1, struct rational r2 )
+void add_rational( struct rational rrr1, struct rational rrr2 )
 {
-	ssize_t num1 = r1.numerator;
-	ssize_t den1 = r1.denominator;
-	ssize_t num2 = r2.numerator;
-	ssize_t den2 = r2.denominator;
+	ssize_t num1 = rrr1.numerator;
+	ssize_t den1 = rrr1.denominator;
+	ssize_t num2 = rrr2.numerator;
+	ssize_t den2 = rrr2.denominator;
 
 	ssize_t gcd = 0;
 	ssize_t gcd_a = 0;
@@ -258,12 +259,12 @@ void add_rational( struct rational r1, struct rational r2 )
 }
 
 
-void multiply_rational( struct rational r1, struct rational r2 )
+void multiply_rational( struct rational rrr1, struct rational rrr2 )
 {
-	ssize_t num1 = r1.numerator;
-	ssize_t den1 = r1.denominator;
-	ssize_t num2 = r2.numerator;
-	ssize_t den2 = r2.denominator;
+	ssize_t num1 = rrr1.numerator;
+	ssize_t den1 = rrr1.denominator;
+	ssize_t num2 = rrr2.numerator;
+	ssize_t den2 = rrr2.denominator;
 
 	ssize_t gcd = 0;
 	ssize_t gcd_a = 0;

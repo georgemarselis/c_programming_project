@@ -89,6 +89,7 @@ void   help         ( void );
 void   initialize   ( struct sentence_pair *sentence_table );
 void   parse_command_args( int argc, char *argv[] );
 int    sanity_ok	( void );
+void begin_execution( void );
 
 
 int sanity_ok( ){
@@ -397,3 +398,4 @@ int main( int argc, char *argv[] )
 
 	return 0;
 }
+

@@ -10,3 +10,6 @@ all:
 clean:
 	@for directory in $(DIRS); do echo "Cleaning in directory $${directory}"; \
 		$(MAKE) --directory=$${directory} clean; done
+
+debug:
+	@for directory in $(DIRS); do $(MAKE) --directory=$${directory} debug; done
