@@ -63,6 +63,7 @@
 > There are 5 airlines booked at capacity.
 
 > The airlines booked at capacity are: OA344 OA123 OA343 OA378
+
 # Λειτουργία:
 
 Η λειτουργία χωρίζεται στα εξείς μέρη:
