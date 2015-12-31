@@ -57,7 +57,8 @@ char   *read_file( void );
 void 	help( void );
 void 	parse_command_args( int argc, char *argv[] );
 void 	begin_execution( void );
-size_t 	parse_buffer( struct airline *reservation, char *buffer );
+struct airline *parse_buffer( struct airline *reservation, char *buffer, size_t *counted );
+void calculate_current_capacity( struct airline *reservation, size_t records_counted );
 
 ///////////////////////
 
@@ -105,7 +106,7 @@ void parse_command_args( int argc, char *argv[] )
 
 		/* getopt_long stores the option index here. */
 		int option_index = 0;
-		c = getopt_long (argc, argv, "n:d:f:s:", long_options, &option_index);
+		c = getopt_long (argc, argv, "hf:", long_options, &option_index);
 
 		if( -1 == c ) {
 			break;
@@ -144,7 +145,7 @@ char *read_file( void ) {
 
 	char   *filename     = args.filename? args.filename : "./data.txt"; // default
 	int     lip 	     = 0;
-	int     mode	     = O_RDONLY
+	int     mode	     = O_RDONLY | O_NOFOLLOW;
 	int     multiplier   = 4800;
 	char   *buffer       = NULL;
 	size_t  filesize     = 0;
@@ -177,22 +178,15 @@ char *read_file( void ) {
 }
 
 
-size_t parse_buffer( struct airline *reservation, char *buffer )
+struct airline *parse_buffer( struct airline *reservation, char *buffer, size_t *counted )
 {
-	const unsigned int     callsign_length = 6;
-	      size_t   records_counted = 0;
-		  char    *pointer         = NULL;
+	const unsigned int callsign_length = 8;
+	      size_t       records_counted = 0;
+		  char        *pointer         = NULL;
 
-
-
-	if( NULL == buffer ) {
-		fprintf( stderr, "buffer is null. Nothing to parse. Exiting\n." );
-		exit( -1 );
-	}
-
-	pointer = malloc( strlen( buffer ) + 1 );
+	pointer = NULL == buffer? NULL : malloc( strlen( buffer ) + 1 );
 	if( NULL == pointer && ENOMEM == errno ) {
-		fprintf( stdout, "Run out of memory trying to parse sentences.\n" );
+		fprintf( stdout, "buffer is null. Nothing to parse. Exiting\n" );
 		exit( -1 );
 	}
 
@@ -204,7 +198,7 @@ size_t parse_buffer( struct airline *reservation, char *buffer )
 			continue;
 		}
 		reservation = realloc( reservation, sizeof( *reservation ) * ( records_counted + 1 ) );
-		reservation[records_counted].flight_number = malloc( sizeof( *reservation[records_counted].flight_number ) * (callsign_length + 1 ) );
+		reservation[records_counted].flight_number = malloc( sizeof( char ) * (callsign_length + 1 ) );
 		if( 0 == sscanf( pointer, "%6s %3u %3u", reservation[records_counted].flight_number, 
 				&reservation[records_counted].airplane_seats, &reservation[records_counted].passenger_count ) 
 		) {
@@ -214,33 +208,65 @@ size_t parse_buffer( struct airline *reservation, char *buffer )
 
 		records_counted++;
 	}
+	*counted = records_counted;
 
-	return records_counted;
+	return reservation;
 }
+
+
+void calculate_current_capacity( struct airline *reservation, size_t records_counted )
+{
+
+	char *buffer = NULL;
+	size_t count = 0;
+	size_t atcapacity = 0;
+
+	while( count < records_counted ) {
+		float result = (float) reservation[count].passenger_count / (float)reservation[count].airplane_seats;
+		if(  result > 0.800 ) {
+			atcapacity++;
+			buffer = realloc( buffer , strlen( reservation[count].flight_number ) + 2 );
+			strcat( buffer, reservation[count].flight_number );
+			strcat( buffer, " ");
+		}
+
+		++count;
+	}
+
+	fprintf( stdout, "There are %lu airlines booked at capacity.\n", atcapacity + 1 );
+	fprintf( stdout, "The airlines booked at capacity are: %s\n", buffer );
+
+
+	return;
+}
+
 
 
 void initialize( void )
 {
 	size_t records_counted 		= 0;
 	size_t count           		= 0;
+	size_t total_passengers 	= 0;
 	char   *buffer              = NULL;
 	struct airline *reservation = NULL;
 
 	buffer = read_file( );
-#ifdef DEBUG
-	fprintf( stdout, "buffer is:\n%s", buffer );
-#endif
-
-	records_counted = parse_buffer( reservation, buffer );
+	reservation = parse_buffer( reservation, buffer, &records_counted );
 
 	while( count < records_counted ) {
 		fprintf( stdout, "record %3lu: Flight: %5s Seats: %3u Passengers: %3u\n",
 				count + 1, reservation[count].flight_number, reservation[count].airplane_seats,
 				reservation[count].passenger_count
 		);
+
+		total_passengers += reservation[count].passenger_count;
 		count++;
 	}
 
+	fprintf( stdout, "Total passengers on all flights: %5lu\n", total_passengers );
+	calculate_current_capacity( reservation, records_counted );
+
+	free( reservation );
 	free( buffer );
 
 	return;
