@@ -36,6 +36,33 @@
 
 > [gmarselis@wintermute exercise_5 (master)]$ clear; ./airline_reservation_system -f data.txt
 
+> record   1: Flight: OA344 Seats: 100 Passengers:  80
+
+> record   2: Flight: OA421 Seats:  84 Passengers:  37
+
+> record   3: Flight: OA830 Seats:  78 Passengers:  34
+
+> record   4: Flight: OA123 Seats:  24 Passengers:  21
+
+> record   5: Flight: OA343 Seats: 490 Passengers: 482
+
+> record   6: Flight: OA478 Seats: 300 Passengers:  40
+
+> record   7: Flight: OA398 Seats: 897 Passengers: 432
+
+> record   8: Flight: OA189 Seats:  73 Passengers:  27
+
+> record   9: Flight: OA208 Seats:  84 Passengers:  37
+
+> record  10: Flight: OA981 Seats: 348 Passengers:  99
+
+> record  11: Flight: OA378 Seats:  37 Passengers:  36
+
+> Total passengers on all flights:  1325
+
+> There are 5 airlines booked at capacity.
+
+> The airlines booked at capacity are: OA344 OA123 OA343 OA378
 # Λειτουργία:
 
 Η λειτουργία χωρίζεται στα εξείς μέρη:
