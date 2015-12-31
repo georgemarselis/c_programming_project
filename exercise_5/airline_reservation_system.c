@@ -38,15 +38,11 @@
 #include <sys/uio.h>
 #include <sys/stat.h>
 
-// function prototypes
-int    sanity_ok(  void );
-char  *read_file( void );
-void   help( void );
-void   parse_command_args( int argc, char *argv[] );
-void   begin_execution( void );
-void   parse_buffer( struct airline *reservation, char *buffer );
-
-///////////////////////
+struct airline {
+	char *flight_number;
+	unsigned int airplane_seats;
+	unsigned int passenger_count;
+};
 
 struct command_line {
 	char *filename;
@@ -54,11 +50,17 @@ struct command_line {
 
 struct command_line args = { NULL };
 
-struct airline {
-	char *flight_number;
-	uint airplane_seats;
-	uint passenger_count;
-};
+// function prototypes
+int 	sanity_ok(  void );
+void 	initialize( void );
+char   *read_file( void );
+void 	help( void );
+void 	parse_command_args( int argc, char *argv[] );
+void 	begin_execution( void );
+size_t 	parse_buffer( struct airline *reservation, char *buffer );
+
+///////////////////////
+
 
 int sanity_ok( void )
 {
@@ -72,6 +74,7 @@ int sanity_ok( void )
 
 	return sanity_status;
 }
+
 
 void help( void ) 
 {
@@ -136,13 +139,14 @@ void parse_command_args( int argc, char *argv[] )
 	return;
 }
 
+
 char *read_file( void ) {
 
 	char   *filename     = args.filename? args.filename : "./data.txt"; // default
 	int     lip 	     = 0;
 	int     mode	     = O_RDONLY | O_NOFOLLOW;
 	int     multiplier   = 4800;
-	char   *buffer = NULL;
+	char   *buffer       = NULL;
 	size_t  filesize     = 0;
 	ssize_t bytes_read   = 0;
 	struct  stat *file   = malloc( sizeof ( struct stat ) );
@@ -172,10 +176,14 @@ char *read_file( void ) {
 	return buffer;
 }
 
-void parse_buffer( struct airline *reservation, char *buffer )
+
+size_t parse_buffer( struct airline *reservation, char *buffer )
 {
-	size_t records_counted  = 0;
-	char *pointer 			= NULL;
+	const uint     callsign_length = 6;
+	      size_t   records_counted = 0;
+		  char    *pointer         = NULL;
+
+
 
 	if( NULL == buffer ) {
 		fprintf( stderr, "buffer is null. Nothing to parse. Exiting\n." );
@@ -187,30 +195,51 @@ void parse_buffer( struct airline *reservation, char *buffer )
 		fprintf( stdout, "Run out of memory trying to parse sentences.\n" );
 		exit( -1 );
 	}
-	if( !strcpy( pointer, buffer ) ) {
-		fprintf( stdout, "Cannot copy buffer to pointer, exiting" );
-		exit( -1 );
-	}
 
+	pointer = buffer;
 	// each record ends at newline
 	for( pointer = strtok( pointer, "\n" ); pointer; pointer = strtok( NULL, "\n" ) ) {
+
+		if( '/' == *pointer ) { // lines begining with '/' are ignored
+			continue;
+		}
+		reservation = realloc( reservation, sizeof( *reservation ) * ( records_counted + 1 ) );
+		reservation[records_counted].flight_number = malloc( sizeof( *reservation[records_counted].flight_number ) * (callsign_length + 1 ) );
+		if( 0 == sscanf( pointer, "%6s %3u %3u", reservation[records_counted].flight_number, 
+				&reservation[records_counted].airplane_seats, &reservation[records_counted].passenger_count ) 
+		) {
+			fprintf( stdout, "There was a parsing issue with record %s\n", pointer );
+			exit( -1 );
+		}
+
 		records_counted++;
 	}
 
-	return;
+	return records_counted;
 }
 
-void initialize( struct airline *reservation )
+
+void initialize( void )
 {
-	// load any files needed
-	char   *buffer     = NULL;
+	size_t records_counted 		= 0;
+	size_t count           		= 0;
+	char   *buffer              = NULL;
+	struct airline *reservation = NULL;
 
 	buffer = read_file( );
 #ifdef DEBUG
 	fprintf( stdout, "buffer is:\n%s", buffer );
 #endif
 
-	parse_buffer( reservation, buffer );
+	records_counted = parse_buffer( reservation, buffer );
+
+	while( count < records_counted ) {
+		fprintf( stdout, "record %3lu: Flight: %5s Seats: %3u Passengers: %3u\n",
+				count + 1, reservation[count].flight_number, reservation[count].airplane_seats,
+				reservation[count].passenger_count
+		);
+		count++;
+	}
 
 	free( buffer );
 
@@ -220,8 +249,7 @@ void initialize( struct airline *reservation )
 
 void begin_execution( void )
 {
-	struct airline *reservation = NULL;
-	initialize( reservation );
+	initialize( );
 
 	return;
 }

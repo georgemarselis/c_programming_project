@@ -279,7 +279,7 @@ size_t find_location( struct sentence_pair *sentence_table )
 			continue;
 		}
 
-		sentences = realloc( sentences, sizeof( char * ) * (sentences_counted + 1 ) );
+		sentences = realloc( sentences, sizeof( *sentences ) * (sentences_counted + 1 ) );
 		sentences[ sentences_counted ] = (char *) malloc( strlen( pointer ) + 1 );
 		strcpy( sentences[ sentences_counted ],  pointer );
 #ifdef DEBUG
@@ -292,7 +292,7 @@ size_t find_location( struct sentence_pair *sentence_table )
 
 	if( NULL == args.term ) {
 		char *newlinePtr = NULL;
-		buffer = malloc( sizeof( char ) * 100 );
+		buffer = malloc( sizeof( *buffer ) * 100 );
 		fprintf( stdout, "Please enter term to search for: " );
 		fscanf( stdin, "%100s", buffer );
 		while( (newlinePtr = strchr( buffer, '\n' ) ) ){
@@ -308,7 +308,7 @@ size_t find_location( struct sentence_pair *sentence_table )
 		strcpy( buffer, args.term );
 	}
 
-	location_counter = malloc( sizeof( int * ) * ( sentences_counted + 1) );
+	location_counter = malloc( sizeof( *location_counter ) * ( sentences_counted + 1) );
 	for( size_t i = 0; i < sentences_counted ; i++ ) {
 
 		if( NULL != strcasestr( sentences[ i ], buffer ) ) {
