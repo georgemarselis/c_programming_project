@@ -144,7 +144,7 @@ char *read_file( void ) {
 
 	char   *filename     = args.filename? args.filename : "./data.txt"; // default
 	int     lip 	     = 0;
-	int     mode	     = O_RDONLY | O_NOFOLLOW;
+	int     mode	     = O_RDONLY
 	int     multiplier   = 4800;
 	char   *buffer       = NULL;
 	size_t  filesize     = 0;
@@ -179,7 +179,7 @@ char *read_file( void ) {
 
 size_t parse_buffer( struct airline *reservation, char *buffer )
 {
-	const uint     callsign_length = 6;
+	const unsigned int     callsign_length = 6;
 	      size_t   records_counted = 0;
 		  char    *pointer         = NULL;
 
