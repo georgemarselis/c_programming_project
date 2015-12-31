@@ -36,13 +36,15 @@
 
 > [gmarselis@wintermute exercise_5 (master)]$ clear; ./airline_reservation_system -f data.txt
 
-> [gmarselis@wintermute exercise_5 (master)]$ clear; ./airline_reservation_system < data.txt #molis teleiwsei ayto, na to antigrapsw kai stis alles askhseis, kai meta na sbhsw ayto to sxolio.
-
-
-
 # Λειτουργία:
 
 Η λειτουργία χωρίζεται στα εξείς μέρη:
 
 1. Ανάλυση των επιλογών της γραμμής εντολών
-2. Αν υπάρχουν επιλογές
+2. Αν υπάρχουν επιλογές τις επεξεργαζόμαστε. Η κυρίως επιλογή είναι το αρχείο από όπου θα διαβάσουμε
+3. Διαβάζουμε το αρχείο με τα στοιχεία
+4. Το επεξεργαζόμαστε σε δομές
+5. Τυπώνουμε τις επεξεργαζμένες δομές
+6. Στέλνουμε τις δομές σε δική τους συνάρτηση για να αρθρήσουμε τους επιβάτες, σε ενα απλό while() loop
+7. Στέλνουμε τις δομές σε δεύτερη συνάρτηση για να ανακαλύψουμε πληρότητα
+8. Έξοδος από το πρόγραμμα
