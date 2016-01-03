@@ -54,7 +54,7 @@ First-In-First-Out, με άλλα λόγια μια δομή ουράς (queue).
 2. Delete
 2. Get-Nth
 3. Count
-4. Έξοδος
+4. Έξοδος
 
 Ανάλογα με την επιλογή του χρήστη ζητούνται τα απαραίτητα στοιχεία (π.χ. για
 την πράξη Insert ζητείται από τον χρήστη η ακέραια τιμή newdata) και καλείται η κατάλληλη συνάρτηση.
@@ -78,12 +78,20 @@ First-In-First-Out, με άλλα λόγια μια δομή ουράς (queue).
 #include <sys/uio.h>
 #include <sys/stat.h>
 
+// struct declerations
+struct node {
+	int data;
+	struct node *next;
+};
 
 struct command_line {
 	char *filename;
 };
 
 struct command_line args = { NULL };
+
+///////////////////////////////////////////
+
 
 // function prototypes
 int 	sanity_ok(  void );
