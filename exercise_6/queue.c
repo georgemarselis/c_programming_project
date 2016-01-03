@@ -52,9 +52,9 @@ First-In-First-Out, με άλλα λόγια μια δομή ουράς (queue).
 
 1. Insert 
 2. Delete
-2. Get-Nth
-3. Count
-4. Έξοδος
+3. Get-Nth
+4. Count
+5. Έξοδος
 
 Ανάλογα με την επιλογή του χρήστη ζητούνται τα απαραίτητα στοιχεία (π.χ. για
 την πράξη Insert ζητείται από τον χρήστη η ακέραια τιμή newdata) και καλείται η κατάλληλη συνάρτηση.
@@ -94,12 +94,24 @@ struct command_line args = { NULL };
 
 
 // function prototypes
-int 	sanity_ok(  void );
-void 	initialize( void );
-char   *read_file( void );
-void 	help( void );
-void 	parse_command_args( int argc, char *argv[] );
-void 	begin_execution( void );
+int    sanity_ok(  void );
+void   initialize( void );
+size_t readfile( void );
+void   help( void );
+void   parse_command_args( int argc, char *argv[] );
+void   begin_execution( void );
+ushort printmenu( void );
+int    printqueue( void );
+void   insertitem ( void );
+void   deleteitem( void );
+void   getnitem( void );
+void   countoccurance( void );
+void   emptyqueue( void );
+
+void Insert( struct node **headRef, int newData );
+int  Delete( struct node **headRef );
+int  GetNth( struct node  *head, int index );
+int  Count(  struct node  *head, int searchFor );
 
 ///////////////////////////////////////////
 
@@ -120,7 +132,7 @@ int sanity_ok( void )
 
 void help( void ) 
 {
-	fprintf( stderr, "ΠΕΖ2015: Άσκηση 5η: Διαχείρηση κρατήσεων αεροπορικής εταιρίας.\n\n" );
+	fprintf( stderr, "ΠΕΖ2015: Άσκηση 6η: Δομή ουράς.\n\n" );
 	fprintf( stderr, "Επιλογές:\n" );
 	fprintf( stderr, "\t-h | --help       Προβολή βοήθειας (αυτή εδώ που βλέπετε)\n");
 	fprintf( stderr, "\t--file <αρχείο>   Φόρτωση δεδωμένων από από το συγκεκριμένο αρχείο\n");
@@ -181,16 +193,159 @@ void parse_command_args( int argc, char *argv[] )
 	return;
 }
 
+size_t readfile( void )
+{
+	size_t bytes_read = 0;
+
+	return bytes_read;
+}
+
+
+void Insert( struct node **headRef, int newData )
+{
+
+	fprintf( stdout, "This is a stub: %p, %d\n", headRef, newData );
+	return;
+}
+
+
+int Delete( struct node **headRef )
+{
+	int data = 0;
+
+	fprintf( stdout, "This is a stub: %p\n", headRef );
+	return data;
+}
+
+
+int GetNth( struct node *head, int index )
+{
+	int data = 0;
+
+	fprintf( stdout, "This is a stub: %p, %d\n", head, index );
+
+	return data;
+}
+
+
+int Count( struct node *head, int searchFor )
+{
+	int data = 0;
+
+	fprintf( stdout, "This is a stub: %p, %d\n", head, searchFor );
+
+	return data;
+}
+
+
+unsigned short printmenu( void )
+{
+	ushort userpick = 0;
+
+	fprintf( stdout, "please choose:\n");
+	fprintf( stdout, "1. Insert 2. Delete 3. Get-Nth 4. Count\n" );
+	fprintf( stdout, "5. Exit\n" );
+	fprintf( stdout, "> " );
+
+	scanf( "%1hu", &userpick );
+
+	return userpick;
+}
+
+
+int printqueue( void )
+{
+	int c = 0;
+	fprintf( stdout, "The list so far:\n" );
+
+	return c; // most likely characters read or something
+}
+
+
+void insertitem ( void )
+{
+
+	fprintf( stdout, "Stub function for adding an item to the queue\n" );
+
+	return;
+}
+
+
+void deleteitem( void )
+{
+
+	fprintf( stdout, "Stub function for deleting an item from the queue\n" );
+
+	return;
+}
+
+
+void getnitem( void )
+{
+
+	fprintf( stdout, "Stub function for getting the value of the N-th item in the queue\n" );
+
+	return;
+}
+
+
+void countoccurance ( void )
+{
+
+	fprintf( stdout, "Stub function for counting the occurance of an item in the queue\n" );
+
+	return;
+}
+
+
+void emptyqueue( void )
+{
+
+	fprintf( stdout, "Stub function for emptying queue\n" );
+
+	return;
+}
 
 void initialize( void )
 {
+	size_t bytes_read = 0;
 
+	bytes_read = readfile( );
+
+	return;
 }
 
 
 void begin_execution( void )
 {
+	const uint exitcode = 5;  // exit menu
+	ushort userpick = 0;
 	initialize( );
+	do {
+			userpick = printmenu( );
+			switch( userpick ) {
+				case 1: 	// insert
+					insertitem( );
+					break;
+				case 2: 	// delete
+					deleteitem( );
+					break;
+				case 3: 	// Get-Nth
+					getnitem( );
+					break;
+				case 4: 	// Count
+					countoccurance( );
+					break;
+				case 5: 	// fall-through / exit
+					emptyqueue( );
+					break;
+				default:
+					fprintf( stdout, "No such choice. Please try again.\n" );
+					break;
+			}
+
+		exitcode != userpick ? printqueue( ) : 1; 		// the score so far
+	} while( exitcode != userpick );
 
 	return;
 }
