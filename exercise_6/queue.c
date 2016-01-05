@@ -96,13 +96,15 @@ struct command_line args = { NULL };
 // function prototypes
 int    sanity_ok(  void );
 void   initialize( void );
-size_t readfile( char *buffer );
+void   initqueue( int *data, int size );
+char  *readfile( void );
+int   *parsefile( char *buffer, int *size );
 void   help( void );
 void   parse_command_args( int argc, char *argv[] );
 void   begin_execution( void );
 ushort printmenu( void );
 int    printqueue( void );
-void   insertitem ( void );
+void   insertitem ( int data );
 void   deleteitem( void );
 void   getnitem( void );
 void   countoccurance( void );
@@ -196,9 +198,8 @@ void parse_command_args( int argc, char *argv[] )
 
 // read the supplied from the command line filename and
 // save it into an array
-size_t readfile( char *buffer )
+char *readfile( void )
 {
-	size_t bytes_read  = 0;
 	const  char   *file= "./data.txt";
 	char   *buff       = NULL;
 	FILE   *infile     = NULL;
@@ -228,13 +229,48 @@ size_t readfile( char *buffer )
 	fprintf( stdout, "buffer is: %s\n", buff );
 #endif
 
-	buffer = malloc( strlen( buff ) );
-	strcpy( buffer, buff );
-
 	fclose( infile ); free( buff ); free( st );
 
 
-	return bytes_read;
+	return buff;
+}
+
+int *parsefile( char *buffer, int *size )
+{
+	int   counter = 0;
+	int  *rvalue  = NULL;
+	char *pointer = NULL;
+
+	counter   = 0;
+	pointer = buffer;
+
+	for( pointer = strtok( pointer, " " ); pointer; pointer = strtok( NULL, " " ) ) {
+
+		rvalue = realloc( rvalue, sizeof( *rvalue ) * ( counter + 1 ) );
+		rvalue[ counter ] = atoi( pointer );
+
+		counter += 1;
+	}
+
+	*size = counter;
+
+	return rvalue;
+}
+
+
+void initialize( void )
+{
+	char   *buffer  = NULL;
+	int    *array   = NULL;
+	int    size     = 0;
+
+	buffer = readfile( );
+	array  = parsefile( buffer, &size );
+	initqueue( array, size );
+
+	free( array );
+
+	return;
 }
 
 
@@ -293,66 +329,20 @@ unsigned short printmenu( void )
 int printqueue( void )
 {
 	int c = 0;
+
 	fprintf( stdout, "The list so far:\n" );
 
 	return c; // most likely characters read or something
 }
 
-
-void insertitem ( void )
+void initqueue ( int *data, int size )
 {
+	int counter = 0;
 
-	fprintf( stdout, "Stub function for adding an item to the queue\n" );
-
-	return;
-}
-
-
-void deleteitem( void )
-{
-
-	fprintf( stdout, "Stub function for deleting an item from the queue\n" );
-
-	return;
-}
-
-
-void getnitem( void )
-{
-
-	fprintf( stdout, "Stub function for getting the value of the N-th item in the queue\n" );
-
-	return;
-}
-
-
-void countoccurance ( void )
-{
-
-	fprintf( stdout, "Stub function for counting the occurance of an item in the queue\n" );
-
-	return;
-}
-
-
-void emptyqueue( void )
-{
-
-	fprintf( stdout, "Stub function for emptying queue\n" );
-
-	return;
-}
-
-void initialize( void )
-{
-	size_t  bytes_read = 0;
-	char   *buffer     = NULL;
-
-	bytes_read = readfile( buffer );
-
-#ifdef DEBUG
-	fprintf( stdout, "buffer is: %s\n", buffer );
-#endif
+	while( counter++ < size - 1)
+	{
+		insertitem( data[counter] );
+	}
 
 	return;
 }
@@ -362,12 +352,16 @@ void begin_execution( void )
 {
 	const uint exitcode = 5;  // exit menu
 	ushort userpick = 0;
+	int    userdata = 0;
+
 	initialize( );
 	do {
 			userpick = printmenu( );
 			switch( userpick ) {
 				case 1: 	// insert
-					insertitem( );
+					fprintf( stdout, "Please insert an integer: " );
+					scanf( "%d", &userdata );
+					insertitem( userdata );
 					break;
 				case 2: 	// delete
 					deleteitem( );
@@ -410,3 +404,46 @@ int main( int argc, char *argv[] )
 	return 0;
 }
 
+void insertitem ( int data )
+{
+
+	fprintf( stdout, "Data item to insert into queue: %d\n", data );
+
+	return;
+}
+
+
+void deleteitem( void )
+{
+
+	fprintf( stdout, "Stub function for deleting an item from the queue\n" );
+
+	return;
+}
+
+
+void getnitem( void )
+{
+
+	fprintf( stdout, "Stub function for getting the value of the N-th item in the queue\n" );
+
+	return;
+}
+
+
+void countoccurance ( void )
+{
+
+	fprintf( stdout, "Stub function for counting the occurance of an item in the queue\n" );
+
+	return;
+}
+
+
+void emptyqueue( void )
+{
+
+	fprintf( stdout, "Stub function for emptying queue\n" );
+
+	return;
+}
