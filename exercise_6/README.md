@@ -72,7 +72,9 @@ First-In-First-Out, με άλλα λόγια μια δομή ουράς (queue).
 # Παραδείγματα:
 
 > ./queue              : run program
+
 > ./queue -f data.txt  : run program from file
+
 > ./queue < data.txt   : ισοδύναμο
 
 # Δείγματα αποτελέσματος
