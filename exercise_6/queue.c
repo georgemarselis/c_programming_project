@@ -96,7 +96,7 @@ struct command_line args = { NULL };
 // function prototypes
 int    sanity_ok(  void );
 void   initialize( void );
-size_t readfile( void );
+size_t readfile( char *buffer );
 void   help( void );
 void   parse_command_args( int argc, char *argv[] );
 void   begin_execution( void );
@@ -193,9 +193,46 @@ void parse_command_args( int argc, char *argv[] )
 	return;
 }
 
-size_t readfile( void )
+
+// read the supplied from the command line filename and
+// save it into an array
+size_t readfile( char *buffer )
 {
-	size_t bytes_read = 0;
+	size_t bytes_read  = 0;
+	const  char   *file= "./data.txt";
+	char   *buff       = NULL;
+	FILE   *infile     = NULL;
+	struct stat *st    = NULL;
+
+	st = malloc( sizeof( *st )  );
+
+	if( -1 == stat( file, st ) ) {
+		fprintf( stderr, "Cannot stat file %s . Exiting\n", file );
+		exit( 1 );
+	}
+
+	infile = fopen( file, "r" );
+	if( NULL == infile ) {
+		fprintf( stderr, "Cannot open file %s . Exiting\n", file );
+		exit( 1 );
+	}
+
+	// read file
+	buff = malloc( sizeof( char )*st->st_size + 1 );
+	if( 0 == fread( buff, st->st_size, sizeof( char ), infile ) ) {
+		fprintf( stderr, "file %s is empty. Exiting\n", file );
+	}
+
+#ifdef DEBUG
+	fprintf( stdout, "file size: %lld bytes\n", st->st_size );
+	fprintf( stdout, "buffer is: %s\n", buff );
+#endif
+
+	buffer = malloc( strlen( buff ) );
+	strcpy( buffer, buff );
+
+	fclose( infile ); free( buff ); free( st );
+
 
 	return bytes_read;
 }
@@ -308,9 +345,14 @@ void emptyqueue( void )
 
 void initialize( void )
 {
-	size_t bytes_read = 0;
+	size_t  bytes_read = 0;
+	char   *buffer     = NULL;
 
-	bytes_read = readfile( );
+	bytes_read = readfile( buffer );
+
+#ifdef DEBUG
+	fprintf( stdout, "buffer is: %s\n", buffer );
+#endif
 
 	return;
 }
