@@ -84,6 +84,8 @@ struct node {
 	struct node *next;
 };
 
+struct node *queue = NULL;
+
 struct command_line {
 	char *filename;
 };
@@ -95,8 +97,7 @@ struct command_line args = { NULL };
 
 // function prototypes
 int    sanity_ok(  void );
-void   initialize( void );
-void   initqueue( int *data, int size );
+void   initialize( struct node **headRef );
 char  *readfile( void );
 int   *parsefile( char *buffer, int *size );
 void   help( void );
@@ -104,10 +105,6 @@ void   parse_command_args( int argc, char *argv[] );
 void   begin_execution( void );
 ushort printmenu( void );
 int    printqueue( void );
-void   insertitem ( int data );
-void   deleteitem( void );
-void   getnitem( void );
-void   countoccurance( void );
 void   emptyqueue( void );
 
 void Insert( struct node **headRef, int newData );
@@ -224,16 +221,12 @@ char *readfile( void )
 		fprintf( stderr, "file %s is empty. Exiting\n", file );
 	}
 
-#ifdef DEBUG
-	fprintf( stdout, "file size: %lld bytes\n", st->st_size );
-	fprintf( stdout, "buffer is: %s\n", buff );
-#endif
-
 	fclose( infile ); free( buff ); free( st );
 
 
 	return buff;
 }
+
 
 int *parsefile( char *buffer, int *size )
 {
@@ -255,22 +248,6 @@ int *parsefile( char *buffer, int *size )
 	*size = counter;
 
 	return rvalue;
-}
-
-
-void initialize( void )
-{
-	char   *buffer  = NULL;
-	int    *array   = NULL;
-	int    size     = 0;
-
-	buffer = readfile( );
-	array  = parsefile( buffer, &size );
-	initqueue( array, size );
-
-	free( array );
-
-	return;
 }
 
 
@@ -335,14 +312,30 @@ int printqueue( void )
 	return c; // most likely characters read or something
 }
 
-void initqueue ( int *data, int size )
+
+void emptyqueue ( void )
 {
-	int counter = 0;
+
+	return;
+}
+
+
+void initialize( struct node **headRef )
+{
+	char   *buffer  = NULL;
+	int    *array   = NULL;
+	int    size     = 0;
+	int    counter  = 0;
+
+	buffer = readfile( );
+	array  = parsefile( buffer, &size );
 
 	while( counter++ < size - 1)
 	{
-		insertitem( data[counter] );
+		Insert( headRef, array[counter] );
 	}
+
+	free( array );
 
 	return;
 }
@@ -350,29 +343,34 @@ void initqueue ( int *data, int size )
 
 void begin_execution( void )
 {
-	const uint exitcode = 5;  // exit menu
-	ushort userpick = 0;
-	int    userdata = 0;
+	ushort userpick  = 0;
+	int    userdata  = 0;
+	int    index     = 0;
+	int    searchFor = 0;
+	const uint exitcode   = 5;  // exit menu
+	struct node **headRef = malloc( sizeof( **headRef ) ) ;
 
-	initialize( );
+	initialize( headRef );
 	do {
 			userpick = printmenu( );
 			switch( userpick ) {
 				case 1: 	// insert
 					fprintf( stdout, "Please insert an integer: " );
 					scanf( "%d", &userdata );
-					insertitem( userdata );
+					Insert( headRef, userdata );
 					break;
 				case 2: 	// delete
-					deleteitem( );
+					Delete( headRef );
 					break;
 				case 3: 	// Get-Nth
-					getnitem( );
+					fprintf( stdout, "Please insert an integer to search for: " );
+					scanf( "%d", &index );
+					GetNth( *headRef, index );
 					break;
 				case 4: 	// Count
-					countoccurance( );
+					Count( *headRef, searchFor );
 					break;
-				case 5: 	// fall-through / exit
+				case 5: 	// empty the queue before exiting
 					emptyqueue( );
 					break;
 				default:
@@ -404,46 +402,3 @@ int main( int argc, char *argv[] )
 	return 0;
 }
 
-void insertitem ( int data )
-{
-
-	fprintf( stdout, "Data item to insert into queue: %d\n", data );
-
-	return;
-}
-
-
-void deleteitem( void )
-{
-
-	fprintf( stdout, "Stub function for deleting an item from the queue\n" );
-
-	return;
-}
-
-
-void getnitem( void )
-{
-
-	fprintf( stdout, "Stub function for getting the value of the N-th item in the queue\n" );
-
-	return;
-}
-
-
-void countoccurance ( void )
-{
-
-	fprintf( stdout, "Stub function for counting the occurance of an item in the queue\n" );
-
-	return;
-}
-
-
-void emptyqueue( void )
-{
-
-	fprintf( stdout, "Stub function for emptying queue\n" );
-
-	return;
-}
