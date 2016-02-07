@@ -52,6 +52,11 @@ struct command_line {
 
 struct command_line args = { NULL };
 
+
+struct lexicon_entry {
+	char *word;
+	char *definition
+};
 ///////////////////////////////////////////
 
 
