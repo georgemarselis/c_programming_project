@@ -221,8 +221,7 @@ char *readfile( void )
 		fprintf( stderr, "file %s is empty. Exiting\n", file );
 	}
 
-	fclose( infile ); free( buff ); free( st );
-
+	fclose( infile ); free( st );
 
 	return buff;
 }
