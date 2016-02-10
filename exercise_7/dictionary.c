@@ -128,29 +128,6 @@ char *readfile( const char *filename )
 	return buff;
 }
 
-
-int *parsefile( char *buffer, int *size )
-{
-	int   counter = 0;
-	int  *rvalue  = NULL;
-	char *pointer = NULL;
-
-	counter   = 0;
-	pointer = buffer;
-
-	for( pointer = strtok( pointer, " " ); pointer; pointer = strtok( NULL, " " ) ) {
-
-		rvalue = realloc( rvalue, sizeof( *rvalue ) * ( counter + 1 ) );
-		rvalue[ counter ] = atoi( pointer );
-
-		counter += 1;
-	}
-
-	*size = counter;
-
-	return rvalue;
-}
-
 void enqueue( unsigned long referencecount, char *word, char *definition )
 {
 	struct lexicon_entry *temp = malloc( sizeof( *temp ) );
