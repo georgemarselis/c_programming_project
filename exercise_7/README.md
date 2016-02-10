@@ -50,7 +50,8 @@ input.txt μία συμβολοσειρά Α που θεωρούμε ότι μο
 
 #Yπόθεσεις:
 
-Συμβολοσειρά Α: Η συμβολοσειρά της Αγγλικής αλφαβήτας και των αραβικών αριθμών (0-9)
+Συμβολοσειρά Α: Η συμβολοσειρά της Αγγλικής αλφαβήτας και των αραβικών αριθμών (0 εώς 9 )
+Κείμενο: Εισαγωγή του βιβλίου ["Heart of Darkness"](https://en.wikipedia.org/wiki/Heart_of_Darkness) του [Joseph Conrad](https://en.wikipedia.org/wiki/Joseph_Conrad), όπως έχει εκδοθεί από το [Project Gutenberg](http://www.gutenberg.org/): http://www.gutenberg.org/cache/epub/526/pg526.txt
 
 
 

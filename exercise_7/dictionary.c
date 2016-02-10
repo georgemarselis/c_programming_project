@@ -22,7 +22,7 @@ input.txt μία συμβολοσειρά Α που θεωρούμε ότι μο
 αποθηκεύεται από τον χρήστη σε ένα αρχείο με το όνομα output.txt.
 
 Υπόδειξη: Για την εύρεση των λέξεων που εμφανίζονται σε μία συμβολοσειρά
-προτείνεται να χρησιμοποιηθεί η συνάρτηση char * strtok(char *s, char * ct)
+προτείνεται να χρησιμοποιηθεί η συνάρτηση char *strtok(char *s, char * ct)
 της βιβλιοθήκης <string.h>. Για την σύγκριση αλφαριθμητικων προτεινεται η 
 συνάρτηση int strcmp(cs, ct) της βιβλιοθήκης <string.h>.
 
@@ -46,31 +46,33 @@ input.txt μία συμβολοσειρά Α που θεωρούμε ότι μο
 #include <sys/stat.h>
 
 // global vars
-struct command_line {
-	char *filename;
-};
-
-struct command_line args = { NULL };
-
-
 struct lexicon_entry {
+	unsigned long referencecount;
 	char *word;
-	char *definition
+	char *definition;
+	struct lexicon_entry *next;
 };
+
+struct lexicon_entry *headptr = NULL;
+struct lexicon_entry *tailptr = NULL;
+
+void enqueue( unsigned long referencecount, char *word, char *definition );
+struct lexicon_entry *dequeue( void );
+void emptyqueue( void );
 ///////////////////////////////////////////
 
 
 // function prototypes
 int sanity_ok( void );
 void help( void );
-void parse_command_args( int argc, char *argv[] );
-char *readfile( void );
+char *readfile( const char *filename );
 int *parsefile( char *buffer, int *size );
+void parsedictionaryfile( char *dictionaryfile );
 void begin_execution( void );
 
-
-
 ///////////////////////////////////////////
+
+
 int sanity_ok( void )
 {
 
@@ -96,89 +98,32 @@ void help( void )
 }
 
 
-void parse_command_args( int argc, char *argv[] ) 
+char *readfile( const char *filename )
 {
-	int c = 1; // track argument state
-
-	while( c ) {
-		static struct option long_options[] = {
-			// // These options set a flag.
-			// {"verbose", no_argument,   &verbose_flag, 1},
-			// {"brief",   no_argument,   &verbose_flag, 0},
-			// // These options don’t set a flag.
-			// // We distinguish them by their indices.
-			{ "help", 		 no_argument, 	    0, 'h' },
-			{ "file",        required_argument, 0, 'f' },
-			{0, 0, 0, 0}
-		};
-
-		/* getopt_long stores the option index here. */
-		int option_index = 0;
-		c = getopt_long (argc, argv, "hf:", long_options, &option_index);
-
-		if( -1 == c ) {
-			break;
-		}
-
-		switch( c ) {
-			case 0:
-				// If this option set a flag, do nothing else now.
-				if( 0 != long_options[option_index].flag ) {
-					break;
-				}
-				fprintf ( stderr, "option %s", long_options[option_index].name);
-				if (optarg) {
-					fprintf (stderr, " with arg %s", optarg); 
-				}
-				printf ("\n");
-				break;
-			case 'h':
-				help( );
-				exit( 0 );
-				break;
-			case 'f':
-				args.filename = optarg;
-				break;
-				default:
-				exit( -1 );
-				break;
-		}
-	}
-
-	return;
-}
-
-
-// read the supplied from the command line filename and
-// save it into an array
-char *readfile( void )
-{
-	const  char   *file= "./data.txt";
-	char   *buff       = NULL;
-	FILE   *infile     = NULL;
-	struct stat *st    = NULL;
+	char   *buff        = NULL;
+	FILE   *infile      = NULL;
+	struct stat *st     = NULL;
 
 	st = malloc( sizeof( *st )  );
 
-	if( -1 == stat( file, st ) ) {
-		fprintf( stderr, "Cannot stat file %s . Exiting\n", file );
+	if( -1 == stat( filename, st ) ) {
+		fprintf( stderr, "Cannot stat file %s . Exiting\n", filename );
 		exit( 1 );
 	}
 
-	infile = fopen( file, "r" );
+	infile = fopen( filename, "r" );
 	if( NULL == infile ) {
-		fprintf( stderr, "Cannot open file %s . Exiting\n", file );
+		fprintf( stderr, "Cannot open file %s . Exiting\n", filename );
 		exit( 1 );
 	}
 
 	// read file
 	buff = malloc( sizeof( char )*st->st_size + 1 );
 	if( 0 == fread( buff, st->st_size, sizeof( char ), infile ) ) {
-		fprintf( stderr, "file %s is empty. Exiting\n", file );
+		fprintf( stderr, "file %s is empty. Exiting\n", filename );
 	}
 
-	fclose( infile ); free( buff ); free( st );
-
+	fclose( infile ); free( st );
 
 	return buff;
 }
@@ -206,12 +151,125 @@ int *parsefile( char *buffer, int *size )
 	return rvalue;
 }
 
-void begin_execution( void )
+void enqueue( unsigned long referencecount, char *word, char *definition )
+{
+	struct lexicon_entry *temp = malloc( sizeof( *temp ) );
+
+	temp->referencecount = referencecount;
+	temp->word = malloc( sizeof( *word ) + 1 );
+	strcpy( temp->word, word );
+	temp->definition = malloc( sizeof( *definition ) + 1 );
+	strcpy( temp->definition, definition );
+
+	if( NULL == headptr && NULL == tailptr ){
+		headptr = tailptr = temp;
+		return;
+	}
+	tailptr->next = temp;
+	tailptr = temp;
+
+	return;
+}
+
+
+struct lexicon_entry *dequeue( void )
+{
+
+	struct lexicon_entry *temp = headptr;
+
+	if( NULL == headptr ) {
+		printf( "Queue is Empty\n" );
+		return NULL;
+	}
+
+	if( headptr == tailptr ) {
+		headptr = tailptr = NULL;
+	}
+	else {
+		headptr = headptr->next;
+	}
+
+	temp = temp->next;
+	headptr = temp;
+
+	return temp;
+}
+
+void emptyqueue( void ) 
 {
 	return;
 }
 
-int main( int argc, char *argv[] )
+void parsedictionaryfile( char *dictionaryfile )
+{
+	// structure of file
+	//		one definition per line
+	//		word | definition until end of line
+	char *pointer = dictionaryfile; // for strtok
+	char *line    = NULL;
+
+	// for each newline in the fle
+	for( pointer  = strtok( pointer, "\n" ); pointer; pointer = strtok( NULL, " " ) ) {
+		// break each line at | 
+		line = pointer;
+		for( line =  strtok( line, "|" ); line; line = strtok( NULL, " " ) ) {
+
+		}
+	}
+
+	// add each def to the queue
+	// zero out each reference number. reference nummber is supposed to be set to something
+	// 		the first time each word is met.
+	return;
+}
+
+void begin_execution( void )
+{
+	char *inputfile      = readfile( "./input.txt" );
+	char *dictionaryfile = readfile( "./dictionary.txt" );
+	char *outputfile     = NULL;
+	char *pointer        = dictionaryfile; // for strtok
+	long counter     	 = 0;
+
+	// count the lines in dictionaryfile and then malloc size of dictionary + counter + 100
+	for( pointer = strtok( pointer, "\n" ); pointer; pointer = strtok( NULL, " " ) ) {
+
+		++counter;
+	}
+	// + 100 just incase
+	outputfile = malloc( sizeof( *inputfile ) + sizeof( *dictionaryfile ) + counter + 100 );
+
+	// enqueue all items in the dictionary
+	parsedictionaryfile( dictionaryfile );
+
+
+	pointer = inputfile; counter = 1;
+	// re-strktok inputfile
+	for( pointer = strtok( pointer, " " ); pointer; pointer = strtok( NULL, " " ) ) {
+		
+		// if current token matches ( strcmp() )
+		// sprintf( outputfile, "[%ld] ", counter++ ) ;
+		// push to stack the definitions used so far, along with number and reference, pop them
+		//		at the end
+		// write token to outputfile
+
+	}
+
+	// walk queue, add items at the end of outputfile
+
+	// open file descriptor
+	// write contents of outputfile to disk
+
+	fprintf( stdout, "%s\n", inputfile );
+	fprintf( stdout, "%s\n", dictionaryfile );
+
+	pointer = NULL; free( inputfile ); free( dictionaryfile ); free( outputfile );
+
+	return;
+}
+
+
+int main( void )
 {
 	// check the status of the terminal
 	if( !sanity_ok( ) ) {
@@ -219,10 +277,6 @@ int main( int argc, char *argv[] )
 	}
 
 	// in case of emergency grake blass
-	if( argc > 1 ) {
-		parse_command_args( argc, argv );
-	}
-
 	begin_execution( );
 
 	return 0;
