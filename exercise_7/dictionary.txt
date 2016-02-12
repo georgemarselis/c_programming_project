@@ -1,3 +1,16 @@
-sun | a often capitalized :  the luminous celestial body around which the earth and other planets revolve, from which they receive heat and light, which is composed mainly of hydrogen and helium, and which has a mean distance from earth of about 93,000,000 miles (150,000,000 kilometers), a linear diameter of 864,000 miles (1,390,000 kilometers), and a mass 332,000 times greater than earth
-sea | the salt water that covers much of the Earth's surface ( literary )
-reason | a statement or fact that explains why something is the way it is, why someone does, thinks, or says something, or why someone behaves a certain way
+sun|the luminous celestial body around which the earth and other planets revolve, from which they receive heat and light
+tolerant|willing to accept feelings, habits, or beliefs that are different from your own
+reason|a statement or fact that explains why something is the way it is, why someone does, thinks, or says something, or why someone behaves a certain way
+sublimate|to express a desire or feeling by changing it into a form that is socially acceptable
+moon|The natural satellite of the earth, visible (chiefly at night) by reflected light from the sun.
+jupiter|Jupiter is the fifth planet from the Sun and the largest planet in the Solar System.
+mercury|Mercury is the smallest planet in the Solar System and the one closest to the Sun
+venus|Venus is the second planet from the Sun, orbiting it every 224.7 Earth days
+mars|Mars is the fourth planet from the Sun and the second smallest planet in the Solar System, after Mercury.
+saturn|Saturn is the sixth planet from the Sun and the second-largest in the Solar System, after Jupiter.
+uranus|Uranus is the seventh planet from the Sun. It has the third-largest planetary radius and fourth-largest planetary mass in the Solar System
+aardvark|The aardvark is a medium-sized, burrowing, nocturnal mammal native to Africa.
+
+mars|Mars is the fourth planet from the Sun and the second smallest planet in the Solar System, after Mercury.
+saturn|Saturn is the sixth planet from the Sun and the second-largest in the Solar System, after Jupiter.
+uranus|Uranus is the seventh planet from the Sun. It has the third-largest planetary radius and fourth-largest planetary mass in the Solar System
