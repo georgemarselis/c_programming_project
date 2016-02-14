@@ -28,25 +28,26 @@ input.txt μία συμβολοσειρά Α που θεωρούμε ότι μο
 
 # Πως να το κατεβάσετε:
 
-> git clone https://github.com/georgemarselis/c_programming_project.git && cd c_programming_project; cd c_programming_project/exercise_7 && make clean && make debug;
+> git clone https://github.com/georgemarselis/c_programming_project.git && cd c_programming_project; cd c_programming_project/exercise_7 && make clean && make;
 
 # Επιλογές:
 * -h | --help
-* -f <αρχείο> αρχείο απο όπου διαβάζονται τα στοιχεία
 
-# Παραδείγματα:
+# Πως να το τρέξετε:
 
 > ./dictionary               : run program
-
-> ./dictionary -f input.txt  : run program from file
-
-> ./dictionary < input.txt   : ισοδύναμο
 
 # Δείγματα αποτελέσματος
 
 > [gmarselis@wintermute exercise_7 (master)]$ clear; ./dictionary
 
-> [gmarselis@wintermute exercise_7 (master)]$ clear; ./dictionary -f input.txt
+> The Project Gutenberg EBook of Heart of Darkness, by Joseph Conrad
+
+> This eBook is for the use of anyone anywhere at no cost and with
+> almost no restrictions whatsoever. You may copy it, give it away or
+> re-use it under the terms of the Project Gutenberg License included
+> with this eBook or online at www.gutenberg.org
+>
 
 #Yπόθεσεις:
 
@@ -54,15 +55,57 @@ input.txt μία συμβολοσειρά Α που θεωρούμε ότι μο
 Κείμενο: Εισαγωγή του βιβλίου ["Heart of Darkness"](https://en.wikipedia.org/wiki/Heart_of_Darkness) του [Joseph Conrad](https://en.wikipedia.org/wiki/Joseph_Conrad), όπως έχει εκδοθεί από το [Project Gutenberg](http://www.gutenberg.org/): http://www.gutenberg.org/cache/epub/526/pg526.txt
 
 
-
-
 # Λειτουργία:
 
-Η λειτουργία χωρίζεται στα εξείς μέρη:
+Η ιδέα του προγράμματος είναι η πιστή αναπαράσταση του αρχικού κειμένου στο τελικό κείμενο, μαζί με
+παρατηθέμενες αριθμημένες παρεπομπές κάθε λέξης προς αντικατάστασης/επεξήγηση στο τέλος του κειμένου.
 
-1. Ανάλυση των επιλογών της γραμμής εντολών
-2. Αν υπάρχουν επιλογές τις επεξεργαζόμαστε. Η κυρίως επιλογή είναι το αρχείο από όπου θα διαβάσουμε
-3. Διαβάζουμε το αρχείο με τα στοιχεία
-4. Το επεξεργαζόμαστε σε δομές
-5. Τυπώνουμε τις επεξεργαζμένες δομές
+Παράδειγμα: Έστω ότι το πρόγραμμα επεξεργάζεται τη πρόταση 
+
+> Ουκ αν λάβοις παρά του μη έχοντος.
+
+η λέξη "λάβεις" είναι μέσα στο λεξικό μας, ως "λάβεις|παίρνω, εντοπίζω επιθυμητό σήμα". Η τελική 
+διαμόρφωση του αποθηκευόμενου κειμένου θα είναι η εξής:
+
+> Ουκ αν λάβοις[1] παρά του μη έχοντος.
+>
+> =====================
+> [1] λάβοις: παίρνω, εντοπίζω επιθυμητό σήμα
+
+Το πρόγραμμα βασίζεται σε δύο αρχεία: 
+
+* input.txt      : Το αρχείο για επεξεργασία
+* dictionary.txt : Το αρχείο του λεξικού
+
+Τα δύο αυτά αρχεία πρέπει να βρίσκονται στο ίδιο φάκελο με το πρόγραμμα
+
+Η λειτουργία του προγράμματος χωρίζεται στα εξείς μέρη:
+
+1. Το εκτελέσιμο αρχείο διαβάζει το αρχείο dictionary.txt
+2. Μετατρέπει το character stream του αρχείου σε οργανωμένη δομή σειράς (queue), στο οποίο, το reference είναι μηδενικό
+3. Διαβάζει το αρχείο για επεξεργασία (input.txt)
+4. Χρησιμοποιόντας την C standard library function strtok( ), σπάει το κείμενο σε λέξεις.
+5. Αν η λέξη υπάρχει στο λεξικό, το πρόγραμμα εισάγει παράθεση για τη λέξη
+6. Παράλληλα, αν αυτή είναι η πρώτη φορά που παρατίθεται η λέξη, το πρόγραμμα ανανεώνει τον αριθμό παράθεσης της λέξης στην ουρά ADT
+6. Το πρόγραμμα αντιγράφει το αρχικό κείμενο σέ ένα προσωρινό χώρο επεξεργασίας
+7. Η επεξεργασία αυτή συνεχίζεται μέχρι το τέλος του αρχείου για επεξεργασία (input.txt) 
+8. Μετά το τέλος του αρχείου για επεξεργασία (input.txt) , παρατίθεται διαχωριστικό ("======================")
+9. Έχοντας κρατήσει στη μνήμη τον αριθμό των παραθέσεων, το πρόγραμμα αναζητά την ανάλογη παράθεση στην ουρά ADT, αντιστοιχόντας τον αριθμού παράθεσης.
+10. Αντιγράφονται στο αρχείο εξόδου (output.txt), οι παραθέσεις, αριθμητικά όπως και στο προηγούμενο παραδειγμά.
+11. Τέλος, το πρόγραμμα εκκενώνει την ουρά ADT
+12. Τέλος προγράμματος
+
+
+# Ελείψεις του προγράμματος
+Το πρόγραμμα δεν μπορεί να επεξεργαστεί λέξεις που δεν ορίζονται από κενά, εκατέρωθεν, 
+όπως μπορούμε να δούμε στην τελευταία γραμμή του κειμένου για επεξεργασία input.txt:
+
+> every minute, as if angered by the approach of the sun.
+
+Η λέξη "sun" υπάρχει στο λεξικό dictionary.txt: 
+
+> sun|the luminous celestial body around which the earth and other planets revolve, from which they receive heat and light
+
+Επειδή η λέξη δεν δηλώνεται σημειολογικά (EBNF) ως <λέξη>::= <κενό><συμβολοσειρά><κενό> αλλά ως <λέξη>=<κενό><συμβολοσειρά>. , 
+το πρόγραμματ δεν αντικαθηστά/παραθέτει επεξήγηση της λέξης.
 
