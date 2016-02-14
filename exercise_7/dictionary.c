@@ -32,6 +32,7 @@ struct lexicon_entry *dequeue( void );
 void emptyqueue( void );
 void createqueue( void );
 void printqueue( void );
+int exists( char *entry, char *definition );
 ///////////////////////////////////////////
 
 
@@ -42,7 +43,7 @@ char *readfile( const char *filename );
 char **makesentences( char *input );
 size_t countsentences( char *input );
 void enqeuesentences( char *sentences[], size_t sentences_counted );
-void parsedictionaryfile( char *dictionaryfile );
+void parsedictionaryfile( );
 void begin_execution( void );
 ///////////////////////////////////////////
 
@@ -77,7 +78,7 @@ char *readfile( const char *filename )
     FILE   *infile      = NULL;
     struct stat *st     = NULL;
 
-    st = malloc( sizeof( *st )  );
+    st = malloc( sizeof( *st ) + 1  );
 
     if( -1 == stat( filename, st ) ) {
         fprintf( stderr, "Cannot stat file %s . Exiting\n", filename );
@@ -91,8 +92,13 @@ char *readfile( const char *filename )
     }
 
     // read file
-    buff = malloc( sizeof( char )*st->st_size + 1 );
-    if( 0 == fread( buff, st->st_size, sizeof( char ), infile ) ) {
+    buff = malloc( sizeof( char ) * ( st->st_size + 1 ) );
+    if( NULL == buff ) {
+        fprintf( stderr, "Cannot allocate memory to read input file. Exiting\n" );
+        exit( 1 );
+    }
+
+    if( 0 == fread( buff, sizeof( char ), st->st_size, infile ) ) {
         fprintf( stderr, "file %s is empty. Exiting\n", filename );
     }
 
@@ -105,13 +111,15 @@ char *readfile( const char *filename )
 size_t countsentences( char *input )
 {
     size_t sentences_counted = 0;
-    char *pointer = malloc( sizeof( char ) * strlen( input ) );
+    char *pointer = malloc( sizeof( char ) * ( strlen( input ) + 1 ) );
     strcpy( pointer, input );
 
     //parse sentences into char *array[], count number of sentences.
-    for( pointer = strtok( pointer, "\n" ); pointer; pointer = strtok( NULL, "\n" ) ) {
+    for( pointer = strtok( pointer, "\n" ); NULL != pointer; pointer = strtok( NULL, "\n" ) ) {
         sentences_counted++;
-    }
+     }
+
+    free( pointer );
 
     return sentences_counted;
 }
@@ -120,20 +128,16 @@ size_t countsentences( char *input )
 char **makesentences( char *input )
 {
     size_t sentences_counted = 0;
-    char *pointer = malloc( sizeof( char ) * strlen( input ) );
+    char *pointer = malloc( sizeof( char ) * ( strlen( input ) + 1 ) );
     char **sentences = NULL;
 
     strcpy( pointer, input );
 
     //parse sentences into char *array[], count number of sentences.
-    for( pointer = strtok( pointer, "\n" ); pointer; pointer = strtok( NULL, "\n" ) ) {
+    for( pointer = strtok( pointer, "\n" ); NULL != pointer; pointer = strtok( NULL, "\n" ) ) {
         if( NULL != pointer ) {
-            sentences = realloc( sentences, ( sizeof( char ) * ( sentences_counted + 1 ) ) );
-            if( NULL == sentences ) {
-                fprintf( stdout, "null pointer at sentences: %s\n", pointer );
-            }
-
-            sentences[ sentences_counted ] =  malloc( strlen( pointer ) + 1 );
+            sentences = realloc( sentences, sizeof( char * ) * ( sentences_counted + 1 ) );
+            sentences[ sentences_counted ] =  malloc( sizeof( char ) *  ( strlen( pointer ) + 1 ) );
             if( NULL == sentences[ sentences_counted ] ){
                 fprintf( stdout, "null pointer at sentences[ %ld ]\n", sentences_counted );
             }
@@ -142,11 +146,13 @@ char **makesentences( char *input )
         }
     }
 
+    free( pointer );
+
     return sentences;
 }
 
 
-void enqeuesentences( char **sentences, size_t sentences_counted )
+void enqeuesentences( char *sentences[], size_t sentences_counted )
 {
     short counter = 0;
 
@@ -156,32 +162,40 @@ void enqeuesentences( char **sentences, size_t sentences_counted )
         char *entry      = NULL;
         char *tempPtr1   = NULL;
 
-        tempPtr1 = realloc( tempPtr1, sizeof( char ) * ( strlen( sentences[ retnuoc ]  ) + 1 ) );
 
+        if( NULL == sentences[ retnuoc ] || 0 == strncmp( "\n", sentences[ retnuoc ] , sizeof ( char ) ) ) {
+            fprintf( stderr, "Problem in enqueuesentences at retnuoc: %ld\n", retnuoc );
+            continue;
+
+        }
+
+        tempPtr1 = malloc( sizeof( char ) * ( strlen( sentences[ retnuoc ] ) + 1  ) );
         strcpy( tempPtr1, sentences[ retnuoc ] );
 
         for( tempPtr1 = strtok( tempPtr1, "|" ); tempPtr1 ; tempPtr1 = strtok( NULL, "|" ) ) {
+            if( 0 == strncmp( "\n", tempPtr1, sizeof( char ) ) ) {
+                continue;
+            }
             if( 1 == counter  ){
                 counter = 0;
-                definition = realloc( definition, sizeof( char ) * ( strlen( tempPtr1 ) + 1 )   );
+                definition = malloc( sizeof( *definition ) * ( strlen( tempPtr1 ) + 1 ) );
                 strcpy( definition, tempPtr1 );
                 break;
             }
 
             if( 0 == counter  ) {
                 counter = 1;
-                entry = realloc( entry, sizeof( char ) * ( strlen( tempPtr1 ) + 1 ) );
+                entry = malloc( sizeof( *entry ) * ( strlen( tempPtr1 ) + 1 ) );
                 strcpy( entry, tempPtr1 );
                 continue;
             }
 
         }
 
-#ifdef DEBUG
-        fprintf( stdout, "retnuoc: %ld\nentry: %s\ndefinition: %s\n", retnuoc, entry, definition );
-#endif
-
         if( NULL != definition && NULL != entry ) {
+#ifdef DEBUG
+            fprintf( stdout, "retnuoc: %ld\nentry: %s\ndefinition: %s\n", retnuoc, entry, definition );
+#endif
             enqueue( 0 , entry, definition );
             memset( entry, 0 , strlen( entry ) );
             memset( definition, 0 , strlen( definition ) );
@@ -203,44 +217,67 @@ void enqeuesentences( char **sentences, size_t sentences_counted )
 }
 
 
-void parsedictionaryfile( char *dictionaryfile )
+void parsedictionaryfile( void )
 {
-    size_t sentences_counted 	= 0;
-    char *pointer  		 	 	= NULL;
-    char **sentences 			= NULL;
+    size_t sentences_counted = 0;
+    char *dictionaryfile     = readfile( "/Users/gmarselis/src/pez2015/c_programming_project/exercise_7/dictionary.txt" );
+    char **sentences         = NULL;
 
-    pointer = malloc( strlen( dictionaryfile ) + 1 );
-    if( NULL == pointer && ENOMEM == errno ) {
-        fprintf( stdout, "Run out of memory trying to parse sentences.\n" );
-        exit( -1 );
-    }
-    strcpy( pointer, dictionaryfile );
-
-    sentences_counted = countsentences( pointer );
-    sentences = makesentences( pointer );
+    sentences_counted = countsentences( dictionaryfile );
+    sentences = makesentences( dictionaryfile );
     enqeuesentences( sentences, sentences_counted );
 
+    free( dictionaryfile );
     exit ( 1 );
     // add each def to the queue
     // zero out each reference number. reference nummber is supposed to be set to something
-    // 		the first time each word is met.
+    //      the first time each word is met.
     return;
+}
+
+int exists( char *entry, char *definition )
+{
+    int result = 0;
+    struct lexicon_entry *tempnode = headnode; // malloc( sizeof( struct lexicon_entry ) );
+                                               // tempnode = headnode;
+
+    while( NULL != tempnode ) {
+        if( !strcmp( tempnode->entry, entry ) && !strcmp( tempnode->definition, definition )  ) {
+            result = 1; break; // gotcha now!
+        }
+
+        tempnode = tempnode->next;
+    }
+
+    // free( tempnode ) ;
+    return result;
 }
 
 void enqueue( size_t referencecount, char *entry, char *definition )
 {
+    if( exists( entry, definition ) && 0 == referencecount ) {
+        return; // found duplicate during insertioon, return;
+    }
 
     if( NULL == tailnode ) {
         tailnode = malloc( sizeof( *tailnode ) );
         tailnode->next = NULL;
 
-        tailnode->referencecount = referencecount;					// reference count
+        tailnode->referencecount = referencecount;                  // reference count
 
-        tailnode->entry = malloc( sizeof( char ) * ( strlen( entry ) + 1 ) );			// entry, allocate mem
-        strcpy( tailnode->entry, entry );							// entry, copy
+        if( NULL == entry ) {
+            fprintf( stdout, "entry is null.\n" );
+            exit( 1 );
+        }
+        tailnode->entry = malloc( sizeof( char ) * ( strlen( entry ) + 1 ) );   // entry, allocate mem
+        strcpy( tailnode->entry, entry );           // entry, copy
 
-        tailnode->definition = malloc( sizeof( char ) * ( strlen( definition ) + 1 ) );  // definition, allocate mem
-        strcpy( tailnode->definition, definition );					// definition, copy
+        if( NULL == definition ) {
+            fprintf( stdout, "definition is null.\n" );
+            exit( 1 );
+        }
+        tailnode->definition = malloc( sizeof( char ) * ( strlen( definition ) + 1 ) ); // definition, allocate mem
+        strcpy( tailnode->definition, definition );    // definition, copy
 
         headnode = tailnode;
     }
@@ -249,10 +286,14 @@ void enqueue( size_t referencecount, char *entry, char *definition )
         struct lexicon_entry *tempnode = malloc( sizeof( *tempnode ) );
         tailnode->next = tempnode;
 
-        tempnode->referencecount = referencecount;					// reference count
+        tempnode->referencecount = referencecount;                  // reference count
 
-        tempnode->entry = malloc( strlen( entry ) + 1 );			// entry, allocate mem
-        strcpy( tempnode->entry, entry );							// entry, copy
+        if( NULL == entry ) {
+            fprintf( stdout, "entry is null.\n" );
+            exit( 1 );
+        }
+        tempnode->entry = malloc( sizeof( char ) * ( strlen( entry ) + 1 ) );           // entry, allocate mem
+        strcpy( tempnode->entry, entry );                           // entry, copy
 
 
         if( NULL == definition ) {
@@ -260,7 +301,7 @@ void enqueue( size_t referencecount, char *entry, char *definition )
             exit( 1 );
         }
         tempnode->definition = malloc( sizeof( char ) * ( strlen( definition ) + 1 ) );  // definition, allocate mem
-        strcpy( tempnode->definition, definition );					// definition, copy
+        strcpy( tempnode->definition, definition );     // definition, copy
 
         tempnode->next = NULL;
         tailnode = tempnode;
@@ -349,15 +390,14 @@ void printqueue( void )
 void begin_execution( void )
 {
     //    char *inputfile      = readfile( "./input.txt" );
-    char *dictionaryfile = readfile( "./dictionary.txt" );
     //    char *outputfile     = NULL;
     //    char *pointer        = dictionaryfile; // for strtok
     
     createqueue( );
-    
+    parsedictionaryfile( );
+
     // enqueue all items in the dictionary
-    parsedictionaryfile( dictionaryfile );
-    
+
 #ifdef DEBUG
     fprintf( stdout, "\n\n" );
     
@@ -388,4 +428,5 @@ int main( void )
     
     return 0;
 }
+
 
