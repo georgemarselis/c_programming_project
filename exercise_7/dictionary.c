@@ -465,13 +465,8 @@ char *parseinputfile( void )
     char *outputbuffer = malloc( sizeof( char )*strlen( inputfile ) * 2 ) ;
     char *pointer = inputfile;
     size_t referencecounter = 0;
-    int begining = 1;
 
     for( pointer = strtok( pointer, " " ); NULL != pointer ; pointer = strtok( NULL, " " ) ) {
-        if( !begining ) {
-            begining = 0;
-            strcat( outputbuffer, " " );
-        }
 
         if( existsentry( pointer ) && !getreference( pointer ) ) {
             updatereference( pointer, ++referencecounter );
@@ -488,7 +483,6 @@ char *parseinputfile( void )
 
         strcat( outputbuffer, " " );
 
-        begining == 1 ? begining = 0 : 1;
     }
 
     strcat( outputbuffer, "\n=================================\n" );
