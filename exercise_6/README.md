@@ -66,29 +66,80 @@ First-In-First-Out, με άλλα λόγια μια δομή ουράς (queue).
 
 # Επιλογές:
 * -h | --help
-* -f <αρχείο> αρχείο απο όπου διαβάζονται τα στοιχεία
 
 # Παραδείγματα:
 
 > ./queue              : run program
 
-> ./queue -f data.txt  : run program from file
-
-> ./queue < data.txt   : ισοδύναμο
-
 # Δείγματα αποτελέσματος
 
-> [gmarselis@wintermute exercise_5 (master)]$ clear; ./queue
-
-> [gmarselis@wintermute exercise_5 (master)]$ clear; ./queue -f data.txt
+    [gmarselis@wintermute exercise_6 (master)]$ ./queue
+    please choose:
+    1. Insert 2. Delete 3. Get-Nth 4. Count
+    5. Exit
+    > 1
+    Please insert an integer: 500
+    500 --> END
+    please choose:
+    1. Insert 2. Delete 3. Get-Nth 4. Count
+    5. Exit
+    > 1
+    Please insert an integer: 800
+    500 --> 800 --> END
+    please choose:
+    1. Insert 2. Delete 3. Get-Nth 4. Count
+    5. Exit
+    > 1
+    Please insert an integer: 850
+    500 --> 800 --> 850 --> END
+    please choose:
+    1. Insert 2. Delete 3. Get-Nth 4. Count
+    5. Exit
+    > 2
+    800 --> 850 --> END
+    please choose:
+    1. Insert 2. Delete 3. Get-Nth 4. Count
+    5. Exit
+    > 1
+    Please insert an integer: 800
+    800 --> 850 --> 800 --> END
+    please choose:
+    1. Insert 2. Delete 3. Get-Nth 4. Count
+    5. Exit
+    > 1
+    Please insert an integer: 480
+    800 --> 850 --> 800 --> 480 --> END
+    please choose:
+    1. Insert 2. Delete 3. Get-Nth 4. Count
+    5. Exit
+    > 3
+    Please insert an index: 2
+    Value at index 2 is: 850
+    800 --> 850 --> 800 --> 480 --> END
+    please choose:
+    1. Insert 2. Delete 3. Get-Nth 4. Count
+    5. Exit
+    > 4
+    Please enter the value you want counted: 800
+    800 appears 2 times in the queue
+    800 --> 850 --> 800 --> 480 --> END
+    please choose:
+    1. Insert 2. Delete 3. Get-Nth 4. Count
+    5. Exit
+    > 5
+    Emptying out the queue
 
 # Λειτουργία:
 
-Η λειτουργία χωρίζεται στα εξείς μέρη:
+Η λειτουργία χωρίζεται στα εξής μέρη:
 
-1. Ανάλυση των επιλογών της γραμμής εντολών
-2. Αν υπάρχουν επιλογές τις επεξεργαζόμαστε. Η κυρίως επιλογή είναι το αρχείο από όπου θα διαβάσουμε
-3. Διαβάζουμε το αρχείο με τα στοιχεία
-4. Το επεξεργαζόμαστε σε δομές
-5. Τυπώνουμε τις επεξεργαζμένες δομές
+1. Το πρόγραμμα δηλώνει μια δομή μηδενικού μήκους, που θα αποτελέσει την κεφαλή της ουράς, καθώς και ολική (global) μεταβλητή, που μετράει τις εισαγμένες δομές. 
+2. Το πρόγραμμα loops, τυπώνοντας οδηγείες από τον χρήστη
+3. Ζητάμε εισαγωγή input από το χρήστη
+4. Σε περίπτωση πρόσθεσης δομής, ζητάμε τον αριθμό για εισαγωγή από τον χρήστη και εισάγουμε μια καινούργια δομή στο τέλος της ουρά, και αυξάνουμε τη global μεταβλητή
+5. Σε περίπτωση αφαίρεσης δομής, αφαιρούμε την κεφαλή της δομής και μειώνουμε της global μεταβλητή
+6. Σε περίπτωση επιλογής της Get-Nth, ζητάμε το index από τον χρήστη, περπατάμε την ουρά. Αν βρέθεί κάτι στο ανάλογο index, το αναφέρουμε και το επιστρέφουμε στο πρόγραμμα
+7. Σε περίπτωση επιλογής της Count, ζητάμε τον αρηθμό προς προσμέτρηση από τον χρήστη και περπατάμε την ουρά, μετρώντας τις εμφανήσεις του ανάλογου αριθμού. Αν δεν βρεθεί τίποτα, αναφέρουμε ότι δεν βρέθηκε ο αριθμός
+8. Σε περίπτωση επιλογής της εξόδου από το πρόγραμμα, αδειάζουμε την ουρά από τη μνήμη, περπατώντας τη για τελευταία φορά, ελευθερόνοντας τη δεσμευμένη μνήμη του κάθε κόμβου.
+
 
