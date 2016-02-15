@@ -1,65 +1,65 @@
 /*
 
-ΠΕΖ2015 Άσκηση 6η:
+ ΠΕΖ2015 Άσκηση 6η:
 
-Θεωρείστε ότι δίδεται ο εξής ορισμός δομής: 
+ Θεωρείστε ότι δίδεται ο εξής ορισμός δομής:
 
-struct node {
+ struct node {
 	int data;
-	struct node *next; 
-};
+	struct node *next;
+ };
 
-Με βάση τον ορισμό αυτό, το ζητούμενο είναι να σχεδιάσετε και να υλοποιήσετε
-μια συνδεδεμένη λίστα στοιχείων που ικανοποιεί τον κανόνα πρόσβασης
-First-In-First-Out, με άλλα λόγια μια δομή ουράς (queue). Στις δομές αυτές
-το στοιχείο το οποίο εντέθηκε πρώτο στη λίστα (με μία πράξη Insert) είναι και
-αυτό που θα διαγραφεί πρώτο (με μία πράξη Delete). Αυτή η λογική πράξεων μπορεί
-να υλοποιηθεί αν η ένθεση στοιχείων γίνεται στο τέλος της λίστας, ενώ η διαγραφή
-αφαιρεί στοιχεία από την αρχή της λίστας.
+ Με βάση τον ορισμό αυτό, το ζητούμενο είναι να σχεδιάσετε και να υλοποιήσετε
+ μια συνδεδεμένη λίστα στοιχείων που ικανοποιεί τον κανόνα πρόσβασης
+ First-In-First-Out, με άλλα λόγια μια δομή ουράς (queue). Στις δομές αυτές
+ το στοιχείο το οποίο εντέθηκε πρώτο στη λίστα (με μία πράξη Insert) είναι και
+ αυτό που θα διαγραφεί πρώτο (με μία πράξη Delete). Αυτή η λογική πράξεων μπορεί
+ να υλοποιηθεί αν η ένθεση στοιχείων γίνεται στο τέλος της λίστας, ενώ η διαγραφή
+ αφαιρεί στοιχεία από την αρχή της λίστας.
 
-Γράψτε συναρτήσεις σύμφωνα με τα παρακάτω πρότυπα, καθώς και ένα πρόγραμμα
-επίδειξης:
+ Γράψτε συναρτήσεις σύμφωνα με τα παρακάτω πρότυπα, καθώς και ένα πρόγραμμα
+ επίδειξης:
 
-* void Insert(struct node **headRef, int newData);
-* int Delete(struct node **headRef);
-* int GetNth(struct node *head, int index);
-* int Count(struct node *head, int searchFor);
+ * void Insert(struct node **headRef, int newData);
+ * int Delete(struct node **headRef);
+ * int GetNth(struct node *head, int index);
+ * int Count(struct node *head, int searchFor);
 
-Η συνάρτηση Insert() δέχεται ως όρισμα ένα δείκτη στον δείκτη που αντιστοιχεί
-στην κεφαλή της λίστας. Δεσμεύει μνήμη, με κλήση της malloc(), για μια δομή του
-τύπου struct node, αποθηκεύει σ’αυτήν την ακέραια τιμή newData (στο πεδίο data)
-και συνδέει κατάλληλα την νέα δομή (βάσει του πεδίου next) ώστε η λίστα να
-ικανοποιεί τον κανόνα πρόσβασης First-In-First-Out, συνεπώς ενθέτει το νέο
-στοιχείο στο τέλος της λίστας.
+ Η συνάρτηση Insert() δέχεται ως όρισμα ένα δείκτη στον δείκτη που αντιστοιχεί
+ στην κεφαλή της λίστας. Δεσμεύει μνήμη, με κλήση της malloc(), για μια δομή του
+ τύπου struct node, αποθηκεύει σ’αυτήν την ακέραια τιμή newData (στο πεδίο data)
+ και συνδέει κατάλληλα την νέα δομή (βάσει του πεδίου next) ώστε η λίστα να
+ ικανοποιεί τον κανόνα πρόσβασης First-In-First-Out, συνεπώς ενθέτει το νέο
+ στοιχείο στο τέλος της λίστας.
 
-Η συνάρτηση Delete() δέχεται ως όρισμα ένα δείκτη στον δείκτη που αντιστοιχεί
-στην κεφαλή της λίστας διαγράφει και επιστρέφει ένα στοιχείο της λίστας έτσι
-ώστε να ικανοποιείται ο κανόνας "First In First Out", συνεπώς διαγράφει και
-επιστρέφει το πρώτο στοιχείο της λίστας.
+ Η συνάρτηση Delete() δέχεται ως όρισμα ένα δείκτη στον δείκτη που αντιστοιχεί
+ στην κεφαλή της λίστας διαγράφει και επιστρέφει ένα στοιχείο της λίστας έτσι
+ ώστε να ικανοποιείται ο κανόνας "First In First Out", συνεπώς διαγράφει και
+ επιστρέφει το πρώτο στοιχείο της λίστας.
 
-Η GetNth() δέχεται ως όρισμα τον δείκτη που αντιστοιχεί στην κεφαλή της
-λίστας, και την θέση (ως ακέραια τιμή που ξεκινά από το 0) ενός στοιχείου.
-Εφόσον η λίστα περιέχει στοιχείο στην καθοριζόμενη θέση, η συνάρτηση επιστρέφει
-την τιμή του πεδίου data για το στοιχείο αυτό, διαφορετικά εκτυπώνει κατάλληλο
-μήνυμα και επιστρέφει την τιμή 0.
+ Η GetNth() δέχεται ως όρισμα τον δείκτη που αντιστοιχεί στην κεφαλή της
+ λίστας, και την θέση (ως ακέραια τιμή που ξεκινά από το 0) ενός στοιχείου.
+ Εφόσον η λίστα περιέχει στοιχείο στην καθοριζόμενη θέση, η συνάρτηση επιστρέφει
+ την τιμή του πεδίου data για το στοιχείο αυτό, διαφορετικά εκτυπώνει κατάλληλο
+ μήνυμα και επιστρέφει την τιμή 0.
 
-Η Count() δέχεται ως όρισμα τον δείκτη που αντιστοιχεί στην κεφαλή της λίστας,
-και μια ακέραια τιμή. Εξετάζει ένα-προς-ένα όλα τα στοιχεία της λίστας και
-επιστρέφει σε πόσα από αυτά το πεδίο data ισούται με την αναζητούμενη τιμή 
-και επιστρέφει 0 εάν η τιμή δεν εμφανίζεται στην λίστα.
+ Η Count() δέχεται ως όρισμα τον δείκτη που αντιστοιχεί στην κεφαλή της λίστας,
+ και μια ακέραια τιμή. Εξετάζει ένα-προς-ένα όλα τα στοιχεία της λίστας και
+ επιστρέφει σε πόσα από αυτά το πεδίο data ισούται με την αναζητούμενη τιμή
+ και επιστρέφει 0 εάν η τιμή δεν εμφανίζεται στην λίστα.
 
-Γράψτε την main() η οποία εμφανίζει μενού επιλογών στο χρήστη:
+ Γράψτε την main() η οποία εμφανίζει μενού επιλογών στο χρήστη:
 
-1. Insert 
-2. Delete
-3. Get-Nth
-4. Count
-5. Έξοδος
+ 1. Insert
+ 2. Delete
+ 3. Get-Nth
+ 4. Count
+ 5. Έξοδος
 
-Ανάλογα με την επιλογή του χρήστη ζητούνται τα απαραίτητα στοιχεία (π.χ. για
-την πράξη Insert ζητείται από τον χρήστη η ακέραια τιμή newdata) και καλείται η κατάλληλη συνάρτηση.
+ Ανάλογα με την επιλογή του χρήστη ζητούνται τα απαραίτητα στοιχεία (π.χ. για
+ την πράξη Insert ζητείται από τον χρήστη η ακέραια τιμή newdata) και καλείται η κατάλληλη συνάρτηση.
 
-*/
+ */
 
 #include <assert.h>
 #include <ctype.h>
@@ -80,324 +80,269 @@ First-In-First-Out, με άλλα λόγια μια δομή ουράς (queue).
 
 // struct declerations
 struct node {
-	int data;
-	struct node *next;
+    int data; // each struct node contains a character
+    struct node *next; // pointer to next node
 };
 
-struct node *queue = NULL;
-
-struct command_line {
-	char *filename;
-};
-
-struct command_line args = { NULL };
+unsigned int nodescounted = 0;
 
 ///////////////////////////////////////////
 
-
 // function prototypes
-int    sanity_ok(  void );
-void   initialize( struct node **headRef );
-char  *readfile( void );
-int   *parsefile( char *buffer, int *size );
-void   help( void );
-void   parse_command_args( int argc, char *argv[] );
-void   begin_execution( void );
-ushort printmenu( void );
-int    printqueue( void );
-void   emptyqueue( void );
+void printmenu( void );
+void begin_execution( void );
+int sanity_ok( void );
 
+///////////////////////////////////////////
+
+/// function prototypes for the queue
 void Insert( struct node **headRef, int newData );
 int  Delete( struct node **headRef );
-int  GetNth( struct node  *head, int index );
-int  Count(  struct node  *head, int searchFor );
-
+int  GetNth( struct node  *headnode, int index );
+int  Count(  struct node  *headnode, int searchFor );
+void printqueue( struct node *headnode );
+int  isempty( struct node *headRef );
+void emptyqueue( struct node **headRef );
 ///////////////////////////////////////////
 
 
 int sanity_ok( void )
 {
 
-	int sanity_status = 1;
+    int sanity_status = 1;
 
-	if( !setlocale( LC_CTYPE, "" ) ) {
-		fprintf( stderr, "LC_CTYPE not set! Please set appropriatelly and run again.\n" );
-		sanity_status = 0;
-	}
-
-	return sanity_status;
+    if( !setlocale( LC_CTYPE, "" ) ) {
+        fprintf( stderr,
+            "LC_CTYPE not set! Please set appropriatelly and run again.\n" );
+        sanity_status = 0;
+    }
+    
+    return sanity_status;
 }
 
-
-void help( void ) 
-{
-	fprintf( stderr, "ΠΕΖ2015: Άσκηση 6η: Δομή ουράς.\n\n" );
-	fprintf( stderr, "Επιλογές:\n" );
-	fprintf( stderr, "\t-h | --help       Προβολή βοήθειας (αυτή εδώ που βλέπετε)\n");
-	fprintf( stderr, "\t--file <αρχείο>   Φόρτωση δεδωμένων από από το συγκεκριμένο αρχείο\n");
-
-	return;
-}
-
-
-void parse_command_args( int argc, char *argv[] ) 
-{
-	int c = 1; // track argument state
-
-	while( c ) {
-		static struct option long_options[] = {
-			// // These options set a flag.
-			// {"verbose", no_argument,   &verbose_flag, 1},
-			// {"brief",   no_argument,   &verbose_flag, 0},
-			// // These options don’t set a flag.
-			// // We distinguish them by their indices.
-			{ "help", 		 no_argument, 	    0, 'h' },
-			{ "file",        required_argument, 0, 'f' },
-			{0, 0, 0, 0}
-		};
-
-		/* getopt_long stores the option index here. */
-		int option_index = 0;
-		c = getopt_long (argc, argv, "hf:", long_options, &option_index);
-
-		if( -1 == c ) {
-			break;
-		}
-
-		switch( c ) {
-			case 0:
-				// If this option set a flag, do nothing else now.
-				if( 0 != long_options[option_index].flag ) {
-					break;
-				}
-				fprintf ( stderr, "option %s", long_options[option_index].name);
-				if (optarg) {
-					fprintf (stderr, " with arg %s", optarg); 
-				}
-				printf ("\n");
-				break;
-			case 'h':
-				help( );
-				exit( 0 );
-				break;
-			case 'f':
-				args.filename = optarg;
-				break;
-				default:
-				exit( -1 );
-				break;
-		}
-	}
-
-	return;
-}
-
-
-// read the supplied from the command line filename and
-// save it into an array
-char *readfile( void )
-{
-	const  char   *file= "./data.txt";
-	char   *buff       = NULL;
-	FILE   *infile     = NULL;
-	struct stat *st    = NULL;
-
-	st = malloc( sizeof( *st )  );
-
-	if( -1 == stat( file, st ) ) {
-		fprintf( stderr, "Cannot stat file %s . Exiting\n", file );
-		exit( 1 );
-	}
-
-	infile = fopen( file, "r" );
-	if( NULL == infile ) {
-		fprintf( stderr, "Cannot open file %s . Exiting\n", file );
-		exit( 1 );
-	}
-
-	// read file
-	buff = malloc( sizeof( char )*st->st_size + 1 );
-	if( 0 == fread( buff, st->st_size, sizeof( char ), infile ) ) {
-		fprintf( stderr, "file %s is empty. Exiting\n", file );
-	}
-
-	fclose( infile ); free( st );
-
-	return buff;
-}
-
-
-int *parsefile( char *buffer, int *size )
-{
-	int   counter = 0;
-	int  *rvalue  = NULL;
-	char *pointer = NULL;
-
-	counter   = 0;
-	pointer = buffer;
-
-	for( pointer = strtok( pointer, " " ); pointer; pointer = strtok( NULL, " " ) ) {
-
-		rvalue = realloc( rvalue, sizeof( *rvalue ) * ( counter + 1 ) );
-		rvalue[ counter ] = atoi( pointer );
-
-		counter += 1;
-	}
-
-	*size = counter;
-
-	return rvalue;
-}
 
 
 void Insert( struct node **headRef, int newData )
 {
+    struct node *temppt = malloc( sizeof( struct node ) );
+    struct node *previoushead = NULL;
+    struct node *currentptr = *headRef;
 
-	fprintf( stdout, "This is a stub: %p, %d\n", headRef, newData );
-	return;
+    if( NULL == temppt ) {
+        printf("No memory available to insert %d. Exiting\n", newData);
+        exit( 1 );
+    }
+
+    // setup the new node
+    temppt->data = newData;
+    temppt->next = NULL;
+
+    // walk the queue; sets previoushead
+    while( NULL != currentptr ) {
+        previoushead = currentptr;
+        currentptr = currentptr->next;
+    }
+
+    if( NULL == previoushead ) { // set the first item on the list
+        temppt->next = *headRef;
+        *headRef = temppt;
+    }
+    else { // insert new node at tail of list.
+        previoushead->next = temppt;
+    }
+
+    ++nodescounted;
+
+    return;
 }
 
 
+// delete a list element
 int Delete( struct node **headRef )
 {
-	int data = 0;
+    int value = 0;
 
-	fprintf( stdout, "This is a stub: %p\n", headRef );
-	return data;
+    if( NULL == *headRef ){
+        fprintf( stderr, "Queue is empty, nothing to delete\n" );
+        return value;
+    }
+
+    // delete first node if a match is found
+    value = (*headRef)->data;
+    *headRef = (*headRef)->next; // de-thread the node
+
+    --nodescounted;
+    return value;
 }
 
 
 int GetNth( struct node *head, int index )
 {
-	int data = 0;
 
-	fprintf( stdout, "This is a stub: %p, %d\n", head, index );
+    struct node *tmpnode = head;
+    unsigned int counter = 1;
+    unsigned int indexx = (unsigned int) index;
+    int value = 0;
+#ifdef DEBUG
+    fprintf( stderr, "Getting Nth item %d:\n", indexx );
+#endif
+    while( NULL != tmpnode ) {
 
-	return data;
+        if( counter == indexx ) {
+            value = tmpnode->data;
+            break;
+        }
+
+        tmpnode = tmpnode->next;
+        ++counter;
+    }
+
+    if( counter != indexx ) {
+        fprintf( stdout, "Could not find anything at index %d\n", indexx );
+    }
+    else {
+        fprintf( stdout, "Value at index %d is: %d\n", indexx, value );
+    }
+
+
+#ifdef DEBUG
+    fprintf( stderr, "Done\n" );
+#endif
+    return value;
 }
 
 
-int Count( struct node *head, int searchFor )
+int Count(  struct node  *head, int searchFor )
 {
-	int data = 0;
+    struct node *tmpnode = head;
+    unsigned int counter = 0;
+#ifdef DEBUG
+    fprintf( stderr, "Getting count for item %d\n", searchFor ) ;
+#endif
+    while( NULL != tmpnode ) {
+        if( tmpnode->data == searchFor ) {
+            ++counter;
+        }
+        tmpnode = tmpnode->next;
+    }
 
-	fprintf( stdout, "This is a stub: %p, %d\n", head, searchFor );
+    fprintf( stdout, "%d appears %u times in the queue\n", searchFor, counter );
 
-	return data;
+    return counter;
+}
+
+int isempty(struct node *tempptr)
+{
+    return tempptr == NULL;
 }
 
 
-unsigned short printmenu( void )
+void printqueue( struct node *headnode )
 {
-	ushort userpick = 0;
+    struct node *tempnode = headnode ;
+    // if list is empty
+    if( isempty( headnode ) ) {
+        fprintf( stdout, "Nothing in the queue\n" );
+        return;
+    }
 
-	fprintf( stdout, "please choose:\n");
-	fprintf( stdout, "1. Insert 2. Delete 3. Get-Nth 4. Count\n" );
-	fprintf( stdout, "5. Exit\n" );
-	fprintf( stdout, "> " );
+    while( NULL != tempnode ) {
+        fprintf( stdout, "%d", tempnode->data );
+        if( NULL != tempnode->next ) {
+            fprintf( stdout, " --> " );
+        }
+        tempnode = tempnode->next;
+    }
 
-	scanf( "%1hu", &userpick );
+    fprintf( stdout, " --> END\n" );
 
-	return userpick;
+    return;
 }
 
 
-int printqueue( void )
+void emptyqueue( struct node **headRef )
 {
-	int c = 0;
 
-	fprintf( stdout, "The list so far:\n" );
+    struct node *tmpnode = *headRef;
+    struct node *prevnode = NULL;
 
-	return c; // most likely characters read or something
+    while( NULL != tmpnode ) {
+        prevnode = tmpnode;
+        tmpnode = tmpnode->next;
+        free( prevnode );
+    }
+
+    return;
 }
 
 
-void emptyqueue ( void )
+void printmenu( void )
 {
+    fprintf( stdout, "please choose:\n");
+    fprintf( stdout, "1. Insert 2. Delete 3. Get-Nth 4. Count\n" );
+    fprintf( stdout, "5. Exit\n" );
+    fprintf( stdout, "> " );
 
-	return;
-}
-
-
-void initialize( struct node **headRef )
-{
-	char   *buffer  = NULL;
-	int    *array   = NULL;
-	int    size     = 0;
-	int    counter  = 0;
-
-	buffer = readfile( );
-	array  = parsefile( buffer, &size );
-
-	while( counter++ < size - 1)
-	{
-		Insert( headRef, array[counter] );
-	}
-
-	free( array );
-
-	return;
+    return;
 }
 
 
 void begin_execution( void )
 {
-	ushort userpick  = 0;
-	int    userdata  = 0;
-	int    index     = 0;
-	int    searchFor = 0;
-	const uint exitcode   = 5;  // exit menu
-	struct node **headRef = malloc( sizeof( **headRef ) ) ;
+    struct node *head = NULL;
+    int enteredvalue = 9001;  // 9001 being outside the generated
+                               // range of values
+    uint userchoice = 10;
+   	const uint exitcode     = 5;  // exit menu
 
-	initialize( headRef );
-	do {
-			userpick = printmenu( );
-			switch( userpick ) {
-				case 1: 	// insert
-					fprintf( stdout, "Please insert an integer: " );
-					scanf( "%d", &userdata );
-					Insert( headRef, userdata );
-					break;
-				case 2: 	// delete
-					Delete( headRef );
-					break;
-				case 3: 	// Get-Nth
-					fprintf( stdout, "Please insert an integer to search for: " );
-					scanf( "%d", &index );
-					GetNth( *headRef, index );
-					break;
-				case 4: 	// Count
-					Count( *headRef, searchFor );
-					break;
-				case 5: 	// empty the queue before exiting
-					emptyqueue( );
-					break;
-				default:
-					fprintf( stdout, "No such choice. Please try again.\n" );
-					break;
-			}
+    do {
+        printmenu( );
+        scanf("%u", &userchoice);
+        switch( userchoice ) {
+            case 1: 	// insert
+                fprintf( stdout, "Please insert an integer: " );
+                scanf( "%d", &enteredvalue );
+                Insert( &head, enteredvalue );
+                break;
+            case 2: 	// delete
+                Delete( &head );
+                break;
+            case 3: 	// Get-Nth
+                fprintf( stdout, "Please insert an index: " );
+                scanf( "%d", &enteredvalue );
+                GetNth( head, enteredvalue );
+                break;
+            case 4: 	// Count
+                fprintf( stdout, "Please enter the value you want counted: " );
+                scanf( "%d", &enteredvalue );
+                Count( head, enteredvalue );
+                break;
+            case 5: 	// empty the queue before exiting
+                fprintf( stdout, "Emptying out the queue\n" );
+                emptyqueue( &head );
+                break;
+            default:
+                fprintf( stdout, "No such choice. Please try again.\n" );
+                break;
+        }
+        
+        if( exitcode != userchoice) {
+            printqueue( head ); } // the score so far
 
-		exitcode != userpick ? printqueue( ) : 1; 		// the score so far
-	} while( exitcode != userpick );
+    } while( exitcode != userchoice );
 
-	return;
+    return;
 }
 
 
-int main( int argc, char *argv[] )
+int main( void )
 {
-	// check the status of the terminal
-	if( !sanity_ok( ) ) {
-		exit( EXIT_FAILURE );
-	}
+    // check the status of the terminal
+    if( !sanity_ok( ) ) {
+        exit( EXIT_FAILURE );
+    }
 
-	// in case of emergency grake blass
-	if( argc > 1 ) {
-		parse_command_args( argc, argv );
-	}
-
-	begin_execution( );
-
-	return 0;
+    begin_execution( );
+    
+    return 0;
 }
-
