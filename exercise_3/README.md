@@ -57,7 +57,8 @@ B. Mία συνάρτηση που θα υπολογίζει το πλήθος �
 
 # Πως να το κατεβάσετε:
 
-> git clone https://github.com/georgemarselis/c_programming_project.git && cd c_programming_project; cd c_programming_project/exercise_3 && make clean && make debug;
+> git clone https://github.com/georgemarselis/c_programming_project.git && 
+cd c_programming_project; cd c_programming_project/exercise_3 && make clean && make;
 
 Επιλογές:
 * -h Προβολή βοήθειας 

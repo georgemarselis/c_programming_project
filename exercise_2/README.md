@@ -18,14 +18,15 @@ n στοιχείων βασίζεται σε σάρωμα του πίνακα κ
 
 # Πως να το κατεβάσετε:
 
-> git clone https://github.com/georgemarselis/c_programming_project.git && cd c_programming_project; cd c_programming_project/exercise_2 && make clean && make;
+> git clone https://github.com/georgemarselis/c_programming_project.git && 
+cd c_programming_project; cd c_programming_project/exercise_2 && make clean && make;
 
 # Επιλογές:
 * -h | --help Help menu (φτωχό, δεν υπάρχουν και πολλά)
 
 # Πως να το τρέξετε:
 
-> ./insertion sort
+> ./insertion_sort
 
 # Δείγματα αποτελέσματος
 
