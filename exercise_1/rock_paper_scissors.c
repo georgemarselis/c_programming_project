@@ -250,8 +250,8 @@ void total_game_analysis( void )
 
 int main( int argc, char *argv[] )
 {
-	int player_selection = -1;
-	int computer_selection = 0;
+	current_game_data.human_selection = -1;
+	current_game_data.computer_selection = 0;
 
 	if( !sanity_ok( ) ) {
 		exit( EXIT_FAILURE );
@@ -263,17 +263,17 @@ int main( int argc, char *argv[] )
 		exit( EXIT_SUCCESS );
 	}
 
-	while( 0 != player_selection ) {
+	while( 0 != current_game_data.human_selection ) {
 
-		player_selection = human_turn( );
-		if( -1 == player_selection ) {
+		current_game_data.human_selection = human_turn( );
+		if( -1 == current_game_data.human_selection ) {
 			continue;
 		}
-		else if( 0 == player_selection ){
+		else if( 0 == current_game_data.human_selection ){
 			break;
 		}
-		computer_selection = computer_turn( );
-		decide_winner( player_selection, computer_selection );
+		current_game_data.human_selection = computer_turn( );
+		decide_winner( current_game_data.human_selection, current_game_data.computer_selection );
 		total_game_data.games_played++;
 
 	}
