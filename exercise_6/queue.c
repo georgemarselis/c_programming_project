@@ -292,8 +292,8 @@ void begin_execution( void )
     struct node *head = NULL;
     int enteredvalue = 9001;  // 9001 being outside the generated
                                // range of values
-    uint userchoice = 10;
-   	const uint exitcode     = 5;  // exit menu
+    unsigned int userchoice = 10;
+   	const unsigned int exitcode     = 5;  // exit menu
 
     do {
         printmenu( );

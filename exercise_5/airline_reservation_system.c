@@ -145,7 +145,7 @@ char *read_file( void ) {
 
 	char   *filename     = args.filename? args.filename : "./data.txt"; // default
 	int     lip 	     = 0;
-	int     mode	     = O_RDONLY | O_NOFOLLOW;
+	int     mode	     = O_RDONLY ;// | O_NOFOLLOW;
 	int     multiplier   = 4800;
 	char   *buffer       = NULL;
 	size_t  filesize     = 0;

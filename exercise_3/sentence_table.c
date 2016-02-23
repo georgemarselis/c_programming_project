@@ -64,6 +64,7 @@ B. Mία συνάρτηση που θα υπολογίζει το πλήθος �
 #include <stdlib.h>
 #include <string.h>
 #include <unistd.h>
+#include <getopt.h>
 
 #include <sys/types.h>
 #include <sys/uio.h>
@@ -124,7 +125,7 @@ size_t read_table( struct sentence_pair *sentence_table ) {
 
 	char   *filename   = args.filename? args.filename : "./lorem_ipsum.txt"; // default
 	int     lip 	   = 0;
-	int     mode	   = O_RDONLY | O_NOFOLLOW;
+	int     mode	   = O_RDONLY ;//| O_NOFOLLOW;
 	int     multiplier = 4800;
 	char   *buffer     = NULL;
 	size_t  filesize   = 0;
@@ -312,7 +313,7 @@ size_t find_location( struct sentence_pair *sentence_table )
 	location_counter = malloc( sizeof( *location_counter ) * ( sentences_counted + 1) );
 	for( size_t i = 0; i < sentences_counted ; i++ ) {
 
-		if( NULL != strcasestr( sentences[ i ], buffer ) ) {
+		if( NULL != strstr( sentences[ i ], buffer ) ) {
 			location_counter[i] = 1;
 		}
 		else {
