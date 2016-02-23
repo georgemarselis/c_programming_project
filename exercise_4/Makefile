@@ -5,7 +5,7 @@ BINARY       := rational_manipulation
 SYMBOLDIR    := rational_manipulation.dSYM
 GCC := gcc
 
-rock_paper_scissors: rock_paper_scissors.c
+rational_manipulation: rational_manipulation.c
 	$(GCC) $(COMPILEFLAGS) $(SOURCE) -o $(BINARY)	
 
 debug: 

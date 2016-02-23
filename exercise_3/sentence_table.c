@@ -78,6 +78,9 @@ struct command_line {
 	char *term;
 };
 
+extern char *optarg;
+extern int optind, opterr, optopt;
+
 struct command_line args = { NULL, NULL };
 
 
@@ -124,7 +127,7 @@ size_t read_table( struct sentence_pair *sentence_table ) {
 
 	char   *filename   = args.filename? args.filename : "./lorem_ipsum.txt"; // default
 	int     lip 	   = 0;
-	int     mode	   = O_RDONLY | O_NOFOLLOW;
+	int     mode	   = O_RDONLY ;//| O_NOFOLLOW;
 	int     multiplier = 4800;
 	char   *buffer     = NULL;
 	size_t  filesize   = 0;
