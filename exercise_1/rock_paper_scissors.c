@@ -175,13 +175,12 @@ void print_human_selection( void )
 
 int human_turn( void )
 {
-	int returned_characters = 0;
 	char *stdin_buffer = malloc( sizeof( long  ) * 1024 );
 
 	print_instructions_to_player( );
 	fgets( stdin_buffer, sizeof( stdin_buffer ), stdin );
 	// store player selection to compare with computer selection
-	returned_characters = sscanf( stdin_buffer, "%d", &(current_game_data.human_selection) );
+	current_game_data.human_selection = sscanf( stdin_buffer, "%d", &(current_game_data.human_selection) );
 
 #ifdef DEBUG
 	print_human_selection( );
