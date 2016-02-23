@@ -64,6 +64,7 @@ B. Mία συνάρτηση που θα υπολογίζει το πλήθος �
 #include <stdlib.h>
 #include <string.h>
 #include <unistd.h>
+#include <getopt.h>
 
 #include <sys/types.h>
 #include <sys/uio.h>
@@ -77,9 +78,6 @@ struct command_line {
 	char *filename;
 	char *term;
 };
-
-extern char *optarg;
-extern int optind, opterr, optopt;
 
 struct command_line args = { NULL, NULL };
 
@@ -315,7 +313,7 @@ size_t find_location( struct sentence_pair *sentence_table )
 	location_counter = malloc( sizeof( *location_counter ) * ( sentences_counted + 1) );
 	for( size_t i = 0; i < sentences_counted ; i++ ) {
 
-		if( NULL != strcasestr( sentences[ i ], buffer ) ) {
+		if( NULL != strstr( sentences[ i ], buffer ) ) {
 			location_counter[i] = 1;
 		}
 		else {
